@@ -1,6 +1,17 @@
 # frozen_string_literal: true
 
-class Player
-  def initialize; end
+require_relative 'piece'
 
+class Player
+  attr_reader :color
+
+  def initialize(color)
+    @color = color
+    @king = Piece.new('king')
+    @queen = Piece.new('queen')
+    @bishop1 = Piece.new('bishop')
+    @bishop2 = Piece.new('bishop')
+  end
+
+  def prompt_for_draw; end
 end
