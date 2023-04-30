@@ -4,7 +4,7 @@ require_relative 'piece'
 
 class Board 
   def initialize(white, black)
-    @game_board = nil
+    @game_board = create_board
     @white = white
     @black = black
   end

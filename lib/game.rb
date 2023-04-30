@@ -9,7 +9,9 @@ class Game
     @board = nil
     @white = nil
     @black = nil
-    @current_player = @white
+    @current_player = nil
+    @checkmate = nil
+    @draw = false
   end
 
   def play_game
@@ -25,18 +27,24 @@ class Game
 
   def set_up
     print_intro
-    user_input == 1 ? new_game : load_game
+    game_option_input == 1 ? new_game : load_game
+  end
+
+  def game_option_input
+    puts 'Enter 1 to start a new game or enter 2 to load a game.'
+    user_input
   end
 
   def new_game
     @white = Player.new('white')
     @black = Player.new('black')
-    @board.create_board(@white, @black)
-    @checkmate = nil
-    @draw = false
+    @board = Board.new(@white, @black)
+    @current_player = @white
   end
 
   def load_game; end
+
+  def user_input; end
 
   ########################################
   #### play_rounds
@@ -62,11 +70,19 @@ class Game
   end
 
   def play_turn
-    puts "#{@current_player.color} you're up!"
-    @board.make_move(get_move)
+    puts "#{@current_player.color} you're up! Enter S to save and exit or enter a move to play"
+    input = @current_player.get_turn_input
+    if input == 'S'
+      save_game
+      exit
+    else
+      @board.make_move(input)
+    end
   end
 
-  def switch_current_player; end
+  def switch_current_player
+    @current_player = @current_player == @white ? @black : @white
+  end
 
   def print_new_board_state
     @board.print_board
@@ -77,20 +93,13 @@ class Game
     @checkmate = @current_player.king if check_for_checkmate(@current_player.king)
   end
 
-  def get_move
-    # prompt for move
-    # make sure move is legal
-    # if move is illegal, say why
-  end
-
-  
-
   ########################################
   #### wrap_up
   ########################################
 
   def wrap_up
     declare_result
+    prompt_for_new_game
   end
 
   def declare_result
@@ -98,16 +107,14 @@ class Game
     declare_draw if @draw
   end
 
+  def prompt_for_new_game; end
+
   def declare_winner
-    winner = @checkmate == @white ? black : white
-    puts "#{@checkmate.color} is in checkmate. #{winner} wins!"
+    winner = @checkmate == @white ? @black : @white
+    puts "#{@checkmate.color} is in checkmate. #{winner.color} wins!"
   end
 
   def declare_draw; end
-
-
-
-
 
   def save_game; end
 end

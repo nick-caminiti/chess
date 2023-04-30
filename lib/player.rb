@@ -14,4 +14,10 @@ class Player
   end
 
   def prompt_for_draw; end
+
+  def get_turn_input
+    # prompt for move
+    # make sure move is legal - can't move into check, 
+    # if move is illegal, say why
+  end
 end
