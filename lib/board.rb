@@ -3,10 +3,13 @@
 require_relative 'piece'
 
 class Board 
+  attr_reader :draw_reason
+
   def initialize(white, black)
     @game_board = create_board
     @white = white
     @black = black
+    @draw_reason = nil
   end
 
   def create_board
@@ -32,7 +35,7 @@ class Board
 
   def check_for_check(king); end
 
-  def check_for_draw; end
+  def draw_conditions_met; end
 
   # edge cases like castling and en passant
 end

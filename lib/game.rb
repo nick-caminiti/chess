@@ -65,8 +65,16 @@ class Game
   end
 
   def draw_protocol
-    @draw = true unless @board.check_for_legal_moves(@current_player)
-    @draw = @current_player.prompt_for_draw if @board.check_for_draw
+    unless @board.check_for_legal_moves(@current_player)
+      @draw = true
+      @draw_reason = 'No legal moves'
+    end
+
+    return unless @board.draw_conditions_met
+
+    @board.update_draw_reason
+    @draw = true if @current_player.prompt_for_draw(@current_player, @board.draw_reason) == true
+    @board.draw_reason = nil unless @draw == true
   end
 
   def play_turn
