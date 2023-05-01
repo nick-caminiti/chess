@@ -39,6 +39,7 @@ class Game
     @white = Player.new('white')
     @black = Player.new('black')
     @board = Board.new(@white, @black)
+    @board.build_board
     @current_player = @white
   end
 

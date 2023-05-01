@@ -6,22 +6,33 @@ class Board
   attr_reader :draw_reason
 
   def initialize(white, black)
-    @game_board = create_board
+    @game_board = nil
     @white = white
     @black = black
     @draw_reason = nil
   end
 
-  def create_board
-    @game_board = [
-      [@a1, @a2],
-      [@b1, @b2]
-    ]
-    @a1 = Square.new('a1')
-    Square.new('h8')
+  def build_board
+    create_game_board_array
+    set_pieces_on_board
   end
 
-  def set_board
+  def create_game_board_array
+    @game_board = []
+    # letters = [a..f]
+    # numbers = [1..8]
+
+    # a1 = Square.new('a1')
+    # Square.new('h8')
+
+    @game_board = [
+      ['a1', 'a2'],
+      ['b1', 'b2']
+    ]
+
+  end
+
+  def set_pieces_on_board
     @a1.occupant = @white.rook1
   end
 
