@@ -89,6 +89,7 @@ class Game
   end
 
   def switch_current_player
+    # needs a test
     @current_player = @current_player == @white ? @black : @white
   end
 
@@ -100,6 +101,8 @@ class Game
   def checkmate_protocol
     @checkmate = @current_player.king if check_for_checkmate(@current_player.king)
   end
+
+  def save_game; end
 
   ########################################
   #### wrap_up
@@ -122,9 +125,9 @@ class Game
     puts "#{@checkmate.color} is in checkmate. #{winner.color} wins!"
   end
 
-  def declare_draw; end
-
-  def save_game; end
+  def declare_draw
+    puts "We'll call it a draw! #{@board.draw_reason}"
+  end
 end
 
 # game = Game.new

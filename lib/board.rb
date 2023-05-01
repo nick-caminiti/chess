@@ -29,6 +29,8 @@ class Board
     # symbol = @a1.occupant.symbol.nil? ? @a1.occupant.symbol : ' '
   end
 
+  def make_move; end
+
   def check_for_checkmate(king)
     # is king in check for any of it's movement options
   end
@@ -36,6 +38,10 @@ class Board
   def check_for_check(king); end
 
   def draw_conditions_met; end
+
+  def update_draw_reason; end
+
+  def check_for_legal_moves(player); end
 
   # edge cases like castling and en passant
 end
