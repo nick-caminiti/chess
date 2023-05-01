@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative 'piece'
+require_relative 'square'
 
 class Board 
   attr_reader :draw_reason
@@ -13,16 +14,16 @@ class Board
   end
 
   def build_board
-    create_game_board_array
+    create_game_board
     set_pieces_on_board
   end
 
-  def create_game_board_array
+  def create_game_board
     @game_board = []
     # letters = [a..f]
     # numbers = [1..8]
 
-    # a1 = Square.new('a1')
+    a1 = Square.new([0, 0])
     # Square.new('h8')
 
     @game_board = [
@@ -40,7 +41,9 @@ class Board
     # symbol = @a1.occupant.symbol.nil? ? @a1.occupant.symbol : ' '
   end
 
-  def make_move; end
+  def make_move
+    # update both piece and square with location/occupant
+  end
 
   def check_for_checkmate(king)
     # is king in check for any of it's movement options
