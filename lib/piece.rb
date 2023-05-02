@@ -3,9 +3,10 @@
 class Piece
   attr_reader :type
 
-  def initialize(type)
+  def initialize(type, color)
     # move hashes into Module
     @type = type
+    @color = color
     @current_square = nil
     @symbol_hash = { king: 'K', queen: 'Q', rook: 'R', bishop: 'B', knight: 'N', pawn: 'P' }
     @symbol = @symbol_hash[type.to_sym]

@@ -71,16 +71,18 @@ class Board
   end
 
   def print_board(current_player)
-    # needs to be reworked. occupant will hold the piece object, not its symbol
-    puts '     a   b   c   d   e   f   g   h  '
-    puts '   |---+---+---+---+---+---+---+---|'
+
 
     if current_player == @white
-      # print in reverse
+      print_for_white
     else
-      # print in order
+      print_for_black
     end
 
+    
+  end
+
+  def print_for_white
     puts '     a   b   c   d   e   f   g   h  '
     puts '   |---+---+---+---+---+---+---+---|'
     row_num = 8
@@ -97,6 +99,25 @@ class Board
       row_num -= 1
     end
     puts '     a   b   c   d   e   f   g   h  '
+  end
+
+  def print_for_black
+    puts '     h   g   f   e   d   c   b   a  '
+    puts '   |---+---+---+---+---+---+---+---|'
+    row_num = 1
+    @game_board.each do |row|
+      symbols = []
+      row.each do |square|
+        is_a_piece = square.occupant.is_a? Piece
+        symbol = is_a_piece ? square.occupant.instance_variable_get(:@symbol) : ' '
+        symbols << symbol
+      end
+
+      puts " #{row_num} | #{symbols[0]} | #{symbols[1]} | #{symbols[2]} | #{symbols[3]} | #{symbols[4]} | #{symbols[5]} | #{symbols[6]} | #{symbols[7]} |  #{row_num}"
+      puts '   |---+---+---+---+---+---+---+---|'
+      row_num += 1
+    end
+    puts '     h   g   f   e   d   c   b   a  '
   end
 
   def make_move

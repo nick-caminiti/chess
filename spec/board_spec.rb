@@ -64,6 +64,7 @@ describe Board do
     context '#set_pieces_on_board' do
       before do
         build_board.instance_variable_set(:@white, Player.new('white'))
+        build_board.instance_variable_set(:@black, Player.new('black'))
       end
 
       it 'adds a white rook to [0, 0]' do
@@ -88,7 +89,7 @@ describe Board do
         square_occupant = square_object.instance_variable_get(:@occupant)
         occupant_symbol = square_occupant.instance_variable_get(:@symbol)
 
-        build_board.print_board(@white)
+        # build_board.print_board(build_board.instance_variable_get(:@black))
         expect(square_occupant).to be_a Piece
         expect(occupant_symbol).to eq('Q')
       end
