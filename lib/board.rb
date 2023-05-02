@@ -77,22 +77,44 @@ class Board
   end
 
   def print_for_white
-    puts Rainbow('   a b c d e f g h  ').color('000000').bg('e6e6e6')
+    light_color = 'dbc3a3'
+    dark_color = '815e32'
+    border = '333333'
+
+    print_border_row(border)
+
     row_num = 8
     @game_board.reverse_each do |row|
-      symbols = []
-      row.each do |square|
-        is_a_piece = square.occupant.is_a? Piece
-        symbol = is_a_piece ? square.occupant.instance_variable_get(:@symbol) : ' '
-        symbols << symbol
-      end
-      portion1 = " #{row_num} #{symbols[0]} #{symbols[1]} #{symbols[2]} #{symbols[3]} #{symbols[4]}"
-      portion2 = "#{symbols[5]} #{symbols[6]} #{symbols[7]} #{row_num} "
 
-      puts Rainbow("#{portion1}#{portion2}").color('000000').bg('dbc3a3')
+      symbols = create_symbols_array(row)
+
+
+      print_board_row(row_num, symbols, light_color, dark_color, border)
+
       row_num -= 1
     end
-    puts Rainbow('    a b c d e f g h ').bg('815e32')
+    print_border_row(border)
+  end
+
+  def print_border_row(border)
+    puts Rainbow('    a  b  c  d  e  f  g  h    ').bg(border)
+  end
+
+  def print_board_row(row_num, symbols, light_color, dark_color, border)
+    color_one = row_num.even? ? dark_color : light_color
+    color_two = row_num.even? ? light_color : dark_color
+
+    puts Rainbow(" #{row_num} ").bg(border) + Rainbow(" #{symbols[0]} ").black.bg(color_one) + Rainbow(" #{symbols[1]} ").black.bg(color_two) + Rainbow(" #{symbols[2]} ").black.bg(color_one) + Rainbow(" #{symbols[3]} ").black.bg(color_two) + Rainbow(" #{symbols[4]} ").black.bg(color_one) + Rainbow(" #{symbols[5]} ").black.bg(color_two) + Rainbow(" #{symbols[6]} ").black.bg(color_one) + Rainbow(" #{symbols[7]} ").black.bg(color_two) + Rainbow(" #{row_num} ").bg(border)
+  end
+
+  def create_symbols_array(row)
+    symbols = []
+    row.each do |square|
+      is_a_piece = square.occupant.is_a? Piece
+      symbol = is_a_piece ? square.occupant.instance_variable_get(:@symbol) : ' '
+      symbols << symbol
+    end
+    symbols
   end
 
   def print_for_black
