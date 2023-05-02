@@ -79,7 +79,7 @@ describe Board do
         expected_color = 'white'
 
         expect(square_occupant).to be_a Piece
-        expect(occupant_symbol).to eq('R')
+        expect(occupant_symbol).to eq("\u{2656}")
         expect(occupant_color).to eq(expected_color)
       end
 
@@ -94,9 +94,9 @@ describe Board do
         occupant_color = square_occupant.instance_variable_get(:@color)
         expected_color = 'white'
 
-        # build_board.print_board(build_board.instance_variable_get(:@black))
+        build_board.print_board(build_board.instance_variable_get(:@white))
         expect(square_occupant).to be_a Piece
-        expect(occupant_symbol).to eq('Q')
+        expect(occupant_symbol).to eq("\u{2655}")
         expect(occupant_color).to eq(expected_color)
       end
 
@@ -112,7 +112,7 @@ describe Board do
         expected_color = 'black'
 
         expect(square_occupant).to be_a Piece
-        expect(occupant_symbol).to eq('P')
+        expect(occupant_symbol).to eq("\u{265F}")
         expect(occupant_color).to eq(expected_color)
       end
 
@@ -129,7 +129,7 @@ describe Board do
 
         # build_board.print_board(build_board.instance_variable_get(:@black))
         expect(square_occupant).to be_a Piece
-        expect(occupant_symbol).to eq('K')
+        expect(occupant_symbol).to eq("\u{265A}")
         expect(occupant_color).to eq(expected_color)
       end
     end

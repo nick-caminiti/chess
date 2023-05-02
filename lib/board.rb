@@ -2,6 +2,7 @@
 
 require_relative 'piece'
 require_relative 'square'
+require 'rainbow'
 
 class Board 
   attr_reader :draw_reason
@@ -76,8 +77,7 @@ class Board
   end
 
   def print_for_white
-    puts '     a   b   c   d   e   f   g   h  '
-    puts '   |---+---+---+---+---+---+---+---|'
+    puts Rainbow('   a b c d e f g h  ').color('000000').bg('e6e6e6')
     row_num = 8
     @game_board.reverse_each do |row|
       symbols = []
@@ -86,12 +86,13 @@ class Board
         symbol = is_a_piece ? square.occupant.instance_variable_get(:@symbol) : ' '
         symbols << symbol
       end
+      portion1 = " #{row_num} #{symbols[0]} #{symbols[1]} #{symbols[2]} #{symbols[3]} #{symbols[4]}"
+      portion2 = "#{symbols[5]} #{symbols[6]} #{symbols[7]} #{row_num} "
 
-      puts " #{row_num} | #{symbols[0]} | #{symbols[1]} | #{symbols[2]} | #{symbols[3]} | #{symbols[4]} | #{symbols[5]} | #{symbols[6]} | #{symbols[7]} |  #{row_num}"
-      puts '   |---+---+---+---+---+---+---+---|'
+      puts Rainbow("#{portion1}#{portion2}").color('000000').bg('dbc3a3')
       row_num -= 1
     end
-    puts '     a   b   c   d   e   f   g   h  '
+    puts Rainbow('    a b c d e f g h ').bg('815e32')
   end
 
   def print_for_black
