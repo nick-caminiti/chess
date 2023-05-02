@@ -51,6 +51,23 @@ class Board
     find_square([5, 1]).occupant = @white.pawn6
     find_square([6, 1]).occupant = @white.pawn7
     find_square([7, 1]).occupant = @white.pawn8
+
+    find_square([0, 7]).occupant = @black.rook1
+    find_square([1, 7]).occupant = @black.knight1
+    find_square([2, 7]).occupant = @black.bishop1
+    find_square([3, 7]).occupant = @black.queen
+    find_square([4, 7]).occupant = @black.king
+    find_square([5, 7]).occupant = @black.bishop2
+    find_square([6, 7]).occupant = @black.knight2
+    find_square([7, 7]).occupant = @black.rook2
+    find_square([0, 6]).occupant = @black.pawn1
+    find_square([1, 6]).occupant = @black.pawn2
+    find_square([2, 6]).occupant = @black.pawn3
+    find_square([3, 6]).occupant = @black.pawn4
+    find_square([4, 6]).occupant = @black.pawn5
+    find_square([5, 6]).occupant = @black.pawn6
+    find_square([6, 6]).occupant = @black.pawn7
+    find_square([7, 6]).occupant = @black.pawn8
   end
 
   def print_board(current_player)
