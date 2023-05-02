@@ -75,9 +75,12 @@ describe Board do
         square_object = build_board.find_square(coordinate)
         square_occupant = square_object.instance_variable_get(:@occupant)
         occupant_symbol = square_occupant.instance_variable_get(:@symbol)
+        occupant_color = square_occupant.instance_variable_get(:@color)
+        expected_color = 'white'
 
         expect(square_occupant).to be_a Piece
         expect(occupant_symbol).to eq('R')
+        expect(occupant_color).to eq(expected_color)
       end
 
       it 'adds a white queen to [3, 0]' do
@@ -88,10 +91,46 @@ describe Board do
         square_object = build_board.find_square(coordinate)
         square_occupant = square_object.instance_variable_get(:@occupant)
         occupant_symbol = square_occupant.instance_variable_get(:@symbol)
+        occupant_color = square_occupant.instance_variable_get(:@color)
+        expected_color = 'white'
 
         # build_board.print_board(build_board.instance_variable_get(:@black))
         expect(square_occupant).to be_a Piece
         expect(occupant_symbol).to eq('Q')
+        expect(occupant_color).to eq(expected_color)
+      end
+
+      it 'adds a black pawn to [0, 6]' do
+        coordinate = [0, 6]
+
+        build_board.build_board
+
+        square_object = build_board.find_square(coordinate)
+        square_occupant = square_object.instance_variable_get(:@occupant)
+        occupant_symbol = square_occupant.instance_variable_get(:@symbol)
+        occupant_color = square_occupant.instance_variable_get(:@color)
+        expected_color = 'black'
+
+        expect(square_occupant).to be_a Piece
+        expect(occupant_symbol).to eq('P')
+        expect(occupant_color).to eq(expected_color)
+      end
+
+      it 'adds a balck king to [4, 7]' do
+        coordinate = [4, 7]
+
+        build_board.build_board
+
+        square_object = build_board.find_square(coordinate)
+        square_occupant = square_object.instance_variable_get(:@occupant)
+        occupant_symbol = square_occupant.instance_variable_get(:@symbol)
+        occupant_color = square_occupant.instance_variable_get(:@color)
+        expected_color = 'black'
+
+        # build_board.print_board(build_board.instance_variable_get(:@black))
+        expect(square_occupant).to be_a Piece
+        expect(occupant_symbol).to eq('K')
+        expect(occupant_color).to eq(expected_color)
       end
     end
   end

@@ -71,15 +71,8 @@ class Board
   end
 
   def print_board(current_player)
-
-
-    if current_player == @white
-      print_for_white
-    else
-      print_for_black
-    end
-
-    
+    # could be optimized
+    current_player == @white ? print_for_white : print_for_black
   end
 
   def print_for_white

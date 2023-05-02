@@ -10,6 +10,7 @@ class Game
     @white = nil
     @black = nil
     @current_player = nil
+    @check = false
     @checkmate = nil
     @draw = false
   end
@@ -58,9 +59,10 @@ class Game
 
       play_turn
       switch_current_player
+      @check = check_for_check(@current_player.king)
       print_new_board_state
 
-      checkmate_protocol
+      checkmate_protocol if @check
       break unless checkmate.nil?
     end
   end
@@ -96,11 +98,11 @@ class Game
 
   def print_new_board_state
     @board.print_board(@current_player)
-    puts 'check' if check_for_check(@current_player.king)
+    puts 'check' if @check
   end
 
   def checkmate_protocol
-    @checkmate = @current_player.king if check_for_checkmate(@current_player.king)
+    @checkmate = @current_player.king if @board.check_for_checkmate(@current_player.king)
   end
 
   def save_game; end

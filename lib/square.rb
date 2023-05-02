@@ -6,8 +6,11 @@ class Square
 
   def initialize(coordinate)
     @coordinate = coordinate
-    @row = coordinate[1]
-    @column = coordinate[0]
+    @occupant = nil
+  end
+
+    # @row = coordinate[1]
+    # @column = coordinate[0]
     # @column_high = nil
     # @column_low = nil
     # @row_high = nil
@@ -16,8 +19,6 @@ class Square
     # @diagonal_high_low = nil
     # @diagonal_low_high = nil
     # @diagonal_low_low = nil
-    @occupant = nil
-  end
 
   # @column_high = [1, 0]
   # @column_low = [-1, 0]
