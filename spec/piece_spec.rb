@@ -3,7 +3,7 @@
 require_relative '../lib/piece'
 
 describe Piece do
-  context '#initialize a king' do 
+  context '#initialize a king' do
     subject(:new_king) { described_class.new('king') }
 
     it 'has instance variable symbol of K' do
@@ -19,10 +19,9 @@ describe Piece do
 
       expect(can_jump).to eq(expected_result)
     end
-
   end
 
-  context '#initialize a knight' do 
+  context '#initialize a knight' do
     subject(:new_king) { described_class.new('knight') }
 
     it 'has instance variable symbol of N' do

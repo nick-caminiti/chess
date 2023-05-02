@@ -19,26 +19,67 @@ class Board
   end
 
   def create_game_board
-    @game_board = []
-    # letters = [a..f]
-    # numbers = [1..8]
+    @game_board = Array.new(8) { [] }
+    rows = (0..7).to_a
+    columns = (0..7).to_a
 
-    a1 = Square.new([0, 0])
-    # Square.new('h8')
+    rows.each_with_index do |row, index|
+      columns.each do |column|
+        @game_board[index] << Square.new([column, row])
+      end
+    end
+  end
 
-    @game_board = [
-      ['a1', 'a2'],
-      ['b1', 'b2']
-    ]
-
+  def find_square(coordinate)
+    @game_board[coordinate[1]][coordinate[0]]
   end
 
   def set_pieces_on_board
-    @a1.occupant = @white.rook1
+    find_square([0, 0]).occupant = @white.rook1
+    find_square([1, 0]).occupant = @white.knight1
+    find_square([2, 0]).occupant = @white.bishop1
+    find_square([3, 0]).occupant = @white.queen
+    find_square([4, 0]).occupant = @white.king
+    find_square([5, 0]).occupant = @white.bishop2
+    find_square([6, 0]).occupant = @white.knight2
+    find_square([7, 0]).occupant = @white.rook2
+    find_square([0, 1]).occupant = @white.pawn1
+    find_square([1, 1]).occupant = @white.pawn2
+    find_square([2, 1]).occupant = @white.pawn3
+    find_square([3, 1]).occupant = @white.pawn4
+    find_square([4, 1]).occupant = @white.pawn5
+    find_square([5, 1]).occupant = @white.pawn6
+    find_square([6, 1]).occupant = @white.pawn7
+    find_square([7, 1]).occupant = @white.pawn8
   end
 
-  def print_board
-    # symbol = @a1.occupant.symbol.nil? ? @a1.occupant.symbol : ' '
+  def print_board(current_player)
+    # needs to be reworked. occupant will hold the piece object, not its symbol
+    puts '     a   b   c   d   e   f   g   h  '
+    puts '   |---+---+---+---+---+---+---+---|'
+
+    if current_player == @white
+      # print in reverse
+    else
+      # print in order
+    end
+
+    puts '     a   b   c   d   e   f   g   h  '
+    puts '   |---+---+---+---+---+---+---+---|'
+    row_num = 8
+    @game_board.reverse_each do |row|
+      symbols = []
+      row.each do |square|
+        is_a_piece = square.occupant.is_a? Piece
+        symbol = is_a_piece ? square.occupant.instance_variable_get(:@symbol) : ' '
+        symbols << symbol
+      end
+
+      puts " #{row_num} | #{symbols[0]} | #{symbols[1]} | #{symbols[2]} | #{symbols[3]} | #{symbols[4]} | #{symbols[5]} | #{symbols[6]} | #{symbols[7]} |  #{row_num}"
+      puts '   |---+---+---+---+---+---+---+---|'
+      row_num -= 1
+    end
+    puts '     a   b   c   d   e   f   g   h  '
   end
 
   def make_move

@@ -16,7 +16,7 @@ class Game
 
   def play_game
     set_up
-    @board.print_board
+    @board.print_board(@current_player)
     play_rounds
     wrap up
   end
@@ -95,7 +95,7 @@ class Game
   end
 
   def print_new_board_state
-    @board.print_board
+    @board.print_board(@current_player)
     puts 'check' if check_for_check(@current_player.king)
   end
 
