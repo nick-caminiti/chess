@@ -94,7 +94,7 @@ describe Board do
         occupant_color = square_occupant.instance_variable_get(:@color)
         expected_color = 'white'
 
-        build_board.print_board(build_board.instance_variable_get(:@black))
+        # build_board.print_board(build_board.instance_variable_get(:@black))
         expect(square_occupant).to be_a Piece
         expect(occupant_symbol).to eq("\u{2655}")
         expect(occupant_color).to eq(expected_color)
@@ -116,7 +116,7 @@ describe Board do
         expect(occupant_color).to eq(expected_color)
       end
 
-      it 'adds a balck king to [4, 7]' do
+      it 'adds a black king to [4, 7]' do
         coordinate = [4, 7]
 
         build_board.build_board
@@ -132,6 +132,30 @@ describe Board do
         expect(occupant_symbol).to eq("\u{265A}")
         expect(occupant_color).to eq(expected_color)
       end
+    end
+  end
+
+  context '#make_move' do
+    subject(:move_board) { described_class.new(white, black) }
+    let(:white) { double('white') }
+    let(:black) { double('black') }
+
+    before do
+      move_board.instance_variable_set(:@white, Player.new('white'))
+      move_board.instance_variable_set(:@black, Player.new('black'))
+      move_board.build_board
+    end
+
+    it 'moves pawn from a2 to a4' do
+      input = 'a2:a4'
+      game_board = move_board.instance_variable_get(:@game_board)
+      piece = game_board[1][0].occupant
+      move_board.make_move(input)
+
+      expect(game_board[1][0].occupant).to be(nil)
+      expect(game_board[3][0].occupant).to be(piece)
+      expect(piece.instance_variable_get(:@current_square)).to eq([0, 3])
+      move_board.print_board(move_board.instance_variable_get(:@white))
     end
   end
 end

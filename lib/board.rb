@@ -135,14 +135,31 @@ class Board
     symbols = []
     row.each do |square|
       is_a_piece = square.occupant.is_a? Piece
-      symbol = is_a_piece ? square.occupant.instance_variable_get(:@current_square) : ' '
+      symbol = is_a_piece ? square.occupant.instance_variable_get(:@symbol) : ' '
       symbols << symbol
     end
     symbols
   end
 
-  def make_move
-    # update both piece and square with location/occupant
+  def make_move(input)
+    current_coordinate = convert_alphanum_to_num(input[0, 2])
+    new_coordinate = convert_alphanum_to_num(input[3, 4])
+
+    current_square = find_square(current_coordinate)
+    current_square_occupant = current_square.occupant
+    new_square = find_square(new_coordinate)
+
+    current_square_occupant.instance_variable_set(:@current_square, new_coordinate)
+    new_square.occupant = current_square_occupant
+    current_square.occupant = nil
+  end
+
+  def convert_alphanum_to_num(alphanum)
+    column_to_num_hash = { a: 0, b: 1, c: 2, d: 3, e: 4, f: 5, g: 6, h: 7 }
+
+    column = column_to_num_hash[alphanum[0].to_sym]
+    row = alphanum[1].to_i - 1
+    [column, row]
   end
 
   def check_for_checkmate(king)
