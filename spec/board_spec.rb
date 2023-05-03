@@ -94,7 +94,7 @@ describe Board do
         occupant_color = square_occupant.instance_variable_get(:@color)
         expected_color = 'white'
 
-        build_board.print_board(build_board.instance_variable_get(:@white))
+        build_board.print_board(build_board.instance_variable_get(:@black))
         expect(square_occupant).to be_a Piece
         expect(occupant_symbol).to eq("\u{2655}")
         expect(occupant_color).to eq(expected_color)

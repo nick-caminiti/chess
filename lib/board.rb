@@ -76,35 +76,50 @@ class Board
     current_player == @white ? print_for_white : print_for_black
   end
 
-  def print_for_white
+  def print_board(current_player)
     light_color = 'dbc3a3'
     dark_color = '815e32'
     border = '333333'
 
-    print_border_row(border)
-
-    row_num = 8
-    @game_board.reverse_each do |row|
-
-      symbols = create_symbols_array(row)
-
-
-      print_board_row(row_num, symbols, light_color, dark_color, border)
-
-      row_num -= 1
-    end
-    print_border_row(border)
+    current_player == @white ? print_border_row_white(border) : print_border_row_black(border)
+    current_player == @white ? print_board_rows_white(light_color, dark_color, border) : print_board_rows_black(light_color, dark_color, border)
+    current_player == @white ? print_border_row_white(border) : print_border_row_black(border)
   end
 
-  def print_border_row(border)
+  def print_border_row_white(border)
     puts Rainbow('    a  b  c  d  e  f  g  h    ').bg(border)
   end
 
-  def print_board_row(row_num, symbols, light_color, dark_color, border)
-    color_one = row_num.even? ? dark_color : light_color
-    color_two = row_num.even? ? light_color : dark_color
+  def print_board_rows_white(light_color, dark_color, border)
+    row_num = 8
+    @game_board.reverse_each do |row|
+      symbols = create_symbols_array(row)
+      color_one = row_num.even? ? dark_color : light_color
+      color_two = row_num.even? ? light_color : dark_color
 
-    puts Rainbow(" #{row_num} ").bg(border) + Rainbow(" #{symbols[0]} ").black.bg(color_one) + Rainbow(" #{symbols[1]} ").black.bg(color_two) + Rainbow(" #{symbols[2]} ").black.bg(color_one) + Rainbow(" #{symbols[3]} ").black.bg(color_two) + Rainbow(" #{symbols[4]} ").black.bg(color_one) + Rainbow(" #{symbols[5]} ").black.bg(color_two) + Rainbow(" #{symbols[6]} ").black.bg(color_one) + Rainbow(" #{symbols[7]} ").black.bg(color_two) + Rainbow(" #{row_num} ").bg(border)
+      print_board_row(row_num, border, color_one, color_two, symbols)
+      row_num -= 1
+    end
+  end
+
+  def print_board_row(row_num, border, color_one, color_two, symbols)
+    puts Rainbow(" #{row_num} ").bg(border) + Rainbow(" #{symbols[0]} ").black.bg(color_two) + Rainbow(" #{symbols[1]} ").black.bg(color_one) + Rainbow(" #{symbols[2]} ").black.bg(color_two) + Rainbow(" #{symbols[3]} ").black.bg(color_one) + Rainbow(" #{symbols[4]} ").black.bg(color_two) + Rainbow(" #{symbols[5]} ").black.bg(color_one) + Rainbow(" #{symbols[6]} ").black.bg(color_two) + Rainbow(" #{symbols[7]} ").black.bg(color_one) + Rainbow(" #{row_num} ").bg(border)
+  end
+
+  def print_border_row_black(border)
+    puts Rainbow('    h  g  f  e  d  c  b  a    ').bg(border)
+  end
+
+  def print_board_rows_black(light_color, dark_color, border)
+    row_num = 1
+    @game_board.each do |row|
+      symbols = create_symbols_array(row).reverse
+      color_one = row_num.even? ? light_color : dark_color
+      color_two = row_num.even? ? dark_color : light_color
+
+      print_board_row(row_num, border, color_one, color_two, symbols)
+      row_num += 1
+    end
   end
 
   def create_symbols_array(row)
