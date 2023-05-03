@@ -150,6 +150,7 @@ class Board
     new_square = find_square(new_coordinate)
 
     current_square_occupant.instance_variable_set(:@current_square, new_coordinate)
+    current_square_occupant.instance_variable_set(:@moved, true)
     new_square.occupant = current_square_occupant
     current_square.occupant = nil
   end

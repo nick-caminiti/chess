@@ -150,6 +150,7 @@ describe Board do
       input = 'a2:a4'
       game_board = move_board.instance_variable_get(:@game_board)
       piece = game_board[1][0].occupant
+
       move_board.make_move(input)
 
       expect(game_board[1][0].occupant).to be(nil)
