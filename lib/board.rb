@@ -17,6 +17,7 @@ class Board
   def build_board
     create_game_board
     set_pieces_on_board
+    update_pieces_current_location
   end
 
   def create_game_board
@@ -71,9 +72,13 @@ class Board
     find_square([7, 6]).occupant = @black.pawn8
   end
 
-  def print_board(current_player)
-    # could be optimized
-    current_player == @white ? print_for_white : print_for_black
+  def update_pieces_current_location
+    @game_board.each do |row|
+      row.each do |square|
+        is_a_piece = square.occupant.is_a? Piece
+        square.occupant.instance_variable_set(:@current_square, square.instance_variable_get(:@coordinate)) if is_a_piece
+      end
+    end
   end
 
   def print_board(current_player)
@@ -82,12 +87,20 @@ class Board
     border = '333333'
 
     current_player == @white ? print_border_row_white(border) : print_border_row_black(border)
-    current_player == @white ? print_board_rows_white(light_color, dark_color, border) : print_board_rows_black(light_color, dark_color, border)
+    if current_player == @white
+      print_board_rows_white(light_color, dark_color, border)
+    else
+      print_board_rows_black(light_color, dark_color, border)
+    end
     current_player == @white ? print_border_row_white(border) : print_border_row_black(border)
   end
 
   def print_border_row_white(border)
     puts Rainbow('    a  b  c  d  e  f  g  h    ').bg(border)
+  end
+
+  def print_border_row_black(border)
+    puts Rainbow('    h  g  f  e  d  c  b  a    ').bg(border)
   end
 
   def print_board_rows_white(light_color, dark_color, border)
@@ -102,14 +115,6 @@ class Board
     end
   end
 
-  def print_board_row(row_num, border, color_one, color_two, symbols)
-    puts Rainbow(" #{row_num} ").bg(border) + Rainbow(" #{symbols[0]} ").black.bg(color_two) + Rainbow(" #{symbols[1]} ").black.bg(color_one) + Rainbow(" #{symbols[2]} ").black.bg(color_two) + Rainbow(" #{symbols[3]} ").black.bg(color_one) + Rainbow(" #{symbols[4]} ").black.bg(color_two) + Rainbow(" #{symbols[5]} ").black.bg(color_one) + Rainbow(" #{symbols[6]} ").black.bg(color_two) + Rainbow(" #{symbols[7]} ").black.bg(color_one) + Rainbow(" #{row_num} ").bg(border)
-  end
-
-  def print_border_row_black(border)
-    puts Rainbow('    h  g  f  e  d  c  b  a    ').bg(border)
-  end
-
   def print_board_rows_black(light_color, dark_color, border)
     row_num = 1
     @game_board.each do |row|
@@ -122,33 +127,18 @@ class Board
     end
   end
 
+  def print_board_row(row_num, border, color_one, color_two, symbols)
+    puts Rainbow(" #{row_num} ").bg(border) + Rainbow(" #{symbols[0]} ").black.bg(color_two) + Rainbow(" #{symbols[1]} ").black.bg(color_one) + Rainbow(" #{symbols[2]} ").black.bg(color_two) + Rainbow(" #{symbols[3]} ").black.bg(color_one) + Rainbow(" #{symbols[4]} ").black.bg(color_two) + Rainbow(" #{symbols[5]} ").black.bg(color_one) + Rainbow(" #{symbols[6]} ").black.bg(color_two) + Rainbow(" #{symbols[7]} ").black.bg(color_one) + Rainbow(" #{row_num} ").bg(border)
+  end
+
   def create_symbols_array(row)
     symbols = []
     row.each do |square|
       is_a_piece = square.occupant.is_a? Piece
-      symbol = is_a_piece ? square.occupant.instance_variable_get(:@symbol) : ' '
+      symbol = is_a_piece ? square.occupant.instance_variable_get(:@current_square) : ' '
       symbols << symbol
     end
     symbols
-  end
-
-  def print_for_black
-    puts '     h   g   f   e   d   c   b   a  '
-    puts '   |---+---+---+---+---+---+---+---|'
-    row_num = 1
-    @game_board.each do |row|
-      symbols = []
-      row.each do |square|
-        is_a_piece = square.occupant.is_a? Piece
-        symbol = is_a_piece ? square.occupant.instance_variable_get(:@symbol) : ' '
-        symbols << symbol
-      end
-
-      puts " #{row_num} | #{symbols[0]} | #{symbols[1]} | #{symbols[2]} | #{symbols[3]} | #{symbols[4]} | #{symbols[5]} | #{symbols[6]} | #{symbols[7]} |  #{row_num}"
-      puts '   |---+---+---+---+---+---+---+---|'
-      row_num += 1
-    end
-    puts '     h   g   f   e   d   c   b   a  '
   end
 
   def make_move
