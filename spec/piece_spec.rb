@@ -65,7 +65,7 @@ describe Piece do
 
         expected_move_squares = [[0, 2], [0, 3]]
         # p game_board
-        white_pawn.update_movements(game_board)
+        white_pawn.update_movements_and_attacks(game_board)
         expect(white_pawn.instance_variable_get(:@move_squares)).to eq(expected_move_squares)
       end
 
@@ -81,7 +81,7 @@ describe Piece do
 
         expected_move_squares = []
         # p game_board
-        white_pawn.update_movements(game_board)
+        white_pawn.update_movements_and_attacks(game_board)
         expect(white_pawn.instance_variable_get(:@move_squares)).to eq(expected_move_squares)
       end
 
@@ -93,7 +93,7 @@ describe Piece do
 
         expected_move_squares = [[0, 3]]
         # p game_board
-        white_pawn.update_movements(game_board)
+        white_pawn.update_movements_and_attacks(game_board)
         expect(white_pawn.instance_variable_get(:@move_squares)).to eq(expected_move_squares)
       end
 
@@ -110,7 +110,7 @@ describe Piece do
 
         expected_move_squares = []
         # p game_board
-        white_pawn.update_movements(game_board)
+        white_pawn.update_movements_and_attacks(game_board)
         expect(white_pawn.instance_variable_get(:@move_squares)).to eq(expected_move_squares)
       end
 
@@ -132,7 +132,7 @@ describe Piece do
 
         expected_move_squares = []
         # p game_board
-        white_rook.update_movements(game_board)
+        white_rook.update_movements_and_attacks(game_board)
         expect(white_rook.instance_variable_get(:@move_squares)).to eq(expected_move_squares)
       end
 
@@ -147,7 +147,7 @@ describe Piece do
           [0, 1], [0, 2], [0, 3], [0, 4], [0, 5], [0, 6], [0, 7]
         ]
         # p game_board
-        white_rook.update_movements(game_board)
+        white_rook.update_movements_and_attacks(game_board)
         expect(white_rook.instance_variable_get(:@move_squares)).to eq(expected_move_squares)
       end
 
@@ -174,7 +174,7 @@ describe Piece do
 
         expected_move_squares = [[3, 1], [4, 2], [5, 3], [6, 4], [7, 5], [1, 1], [0, 2]]
         # p game_board
-        white_bishop.update_movements(game_board)
+        white_bishop.update_movements_and_attacks(game_board)
         expect(white_bishop.instance_variable_get(:@move_squares)).to eq(expected_move_squares)
       end
 
@@ -201,7 +201,7 @@ describe Piece do
 
         expected_move_squares = [[2, 2], [0, 2], [3, 1]]
         # p game_board
-        white_knight.update_movements(game_board)
+        white_knight.update_movements_and_attacks(game_board)
         expect(white_knight.instance_variable_get(:@move_squares)).to eq(expected_move_squares)
       end
 
@@ -233,7 +233,7 @@ describe Piece do
 
         expected_move_squares = [[3, 1], [4, 2], [5, 3], [6, 4], [1, 1], [0, 2]]
         # p game_board
-        white_bishop.update_movements(game_board)
+        white_bishop.update_movements_and_attacks(game_board)
         expect(white_bishop.instance_variable_get(:@move_squares)).to eq(expected_move_squares)
       end
 
@@ -253,7 +253,7 @@ describe Piece do
           [0, 1], [0, 2], [0, 3], [0, 4], [0, 5]
         ]
         # p game_board
-        white_rook.update_movements(game_board)
+        white_rook.update_movements_and_attacks(game_board)
         expect(white_rook.instance_variable_get(:@move_squares)).to eq(expected_move_squares)
       end
 
@@ -285,7 +285,7 @@ describe Piece do
 
         expected_move_squares = [[2, 2], [0, 2], [3, 1]]
         # p game_board
-        white_knight.update_movements(game_board)
+        white_knight.update_movements_and_attacks(game_board)
         expect(white_knight.instance_variable_get(:@move_squares)).to eq(expected_move_squares)
       end
 
