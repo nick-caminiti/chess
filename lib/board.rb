@@ -89,7 +89,7 @@ class Board
   def update_piece_movements_and_attacks
     @game_board.each do |row|
       row.each do |square|
-        square.occupant.update_movements_and_attacks(@game_board) if square.occupant.is_a? Piece
+        square.occupant.update_movements_and_attacks(self) if square.occupant.is_a? Piece
       end
     end
   end
@@ -179,7 +179,7 @@ class Board
     [column, row]
   end
 
-  def check_for_legal_move(color, start, destination)
+  def check_for_legal_move(color, move)
     return false if check_for_check(color, destination)
 
     piece = find_square(convert_alphanum_to_num(start))

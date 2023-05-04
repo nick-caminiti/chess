@@ -19,7 +19,7 @@ class Game
     set_up
     @board.print_board(@current_player)
     play_rounds
-    wrap up
+    wrap_up
   end
 
   ########################################
@@ -27,8 +27,9 @@ class Game
   ########################################
 
   def set_up
-    print_intro
-    game_option_input == 1 ? new_game : load_game
+    new_game
+    # print_intro
+    # game_option_input == 1 ? new_game : load_game
   end
 
   def game_option_input
@@ -58,6 +59,7 @@ class Game
       break if @draw
 
       play_turn
+      puts 'hi'
       switch_current_player
       @check = check_for_check(@current_player.king)
       print_new_board_state
@@ -81,13 +83,16 @@ class Game
   end
 
   def play_turn
-    puts "#{@current_player.color} you're up! Enter S to save and exit or enter a move to play"
-    input = @current_player.get_turn_input
-    if input == 'S'
-      save_game
-      exit
-    else
-      @board.make_move(input)
+    puts 'hello'
+    loop do
+      input = @current_player.get_turn_input
+      if input == 'S'
+        save_game
+        exit
+      elsif check_for_legal_move(@current_player.color, input)
+        @board.make_move(input)
+        break
+      end
     end
     @board.update_piece_movements_and_attacks
   end

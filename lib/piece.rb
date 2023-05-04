@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
-require 'constants'
+require_relative 'board'
 
 class Piece
-  include Constants
   attr_reader :type
 
   def initialize(type, color)
@@ -11,6 +10,8 @@ class Piece
     @color = color
     @symbol = symbol_look_up(type, color)
     @current_square = nil
+    @current_column = nil
+    @current_row = nil
     @moved = false
     @move_squares = nil
     @attack_squares = nil
@@ -49,57 +50,39 @@ class Piece
   end
 
   def update_movements(current_board)
-    # need to check if square is oppoent if can attack
     @move_squares = []
-    new_coordinate = []
 
-    current_column = @current_square[0]
-    current_row = @current_square[1]
+    @current_column = @current_square[0]
+    @current_row = @current_square[1]
 
     if @type == 'queen' 
-      find_all_diagonals(current_board, current_column, current_row)
-      find_all_straights(current_board, current_column, current_row)
+      find_all_diagonals(current_board)
+      find_all_straights(current_board)
     elsif @type == 'bishop'
-      find_all_diagonals(current_board, current_column, current_row)
+      find_all_diagonals(current_board)
     elsif @type == 'rook'
-      find_all_straights(current_board, current_column, current_row)
-    # elsif @type == 'pawn'
-
+      find_all_straights(current_board)
     else
-      use_move_hash(current_board, current_column, current_row)
+      use_move_hash(current_board)
     end
   end
 
-  def find_all_diagonals(current_board, current_column, current_row)
+  def find_all_diagonals(current_board)
     diagonals = [[1, 1], [1, -1], [-1, -1], [-1, 1]]
 
-    diagonals.each do |direction|
-      new_column = current_column
-      new_row = current_row
-      loop do
-        new_column += direction[0]
-        new_row += direction[1]
-        new_coordinate = [new_column, new_row]
-
-        new_square = current_board.find_square(new_coordinate)
-        break if new_square == false
-
-        unless new_square.occupant.nil?
-          @move_squares << new_coordinate if new_square.occupant.instance_variable_get(:@color) != @color
-          break
-        end
-
-        @move_squares << new_coordinate
-      end
-    end
+    find_all_direction(diagonals, current_board)
   end
 
-  def find_all_straights(current_board, current_column, current_row)
+  def find_all_straights(current_board)
     straights = [[1, 0], [-1, 0], [0, 1], [0, -1]]
 
-    straights.each do |direction|
-      new_column = current_column
-      new_row = current_row
+    find_all_direction(straights, current_board)
+  end
+
+  def find_all_direction(directions, current_board)
+    directions.each do |direction|
+      new_column = @current_column
+      new_row = @current_row
       loop do
         new_column += direction[0]
         new_row += direction[1]
@@ -112,29 +95,25 @@ class Piece
           @move_squares << new_coordinate if new_square.occupant.instance_variable_get(:@color) != @color
           break
         end
-
         @move_squares << new_coordinate
       end
     end
   end
 
-  def use_move_hash(current_board, current_column, current_row)
+  def use_move_hash(current_board)
     movements_array = move_look_up
     movements_array.each do |move|
-      new_column = current_column + move[0]
-      new_row = current_row + move[1]
+      new_column = @current_column + move[0]
+      new_row = @current_row + move[1]
       new_coordinate = [new_column, new_row]
 
       new_square = current_board.find_square(new_coordinate)
       next if new_square == false
 
-      if @type == 'pawn'
-        break unless new_square.occupant.nil?
-      else
-        unless new_square.occupant.nil?
-          @move_squares << new_coordinate if new_square.occupant.instance_variable_get(:@color) != @color
-          break
-        end
+      unless new_square.occupant.nil?
+        occupant_color = new_square.occupant.instance_variable_get(:@color)
+        @move_squares << new_coordinate if occupant_color != @color && @type != 'pawn'
+        break
       end
       @move_squares << new_coordinate
     end
@@ -144,12 +123,9 @@ class Piece
     pawn_attacks = [[1, 1], [-1, 1]]
     new_coordinate = []
 
-    current_column = @current_square[0]
-    current_row = @current_square[1]
-
     pawn_attacks.each do |move|
-      new_column = current_column + move[0]
-      new_row = current_row + move[1]
+      new_column = @current_column + move[0]
+      new_row = @current_row + move[1]
       new_coordinate = [new_column, new_row]
 
       new_square = current_board.find_square(new_coordinate)
@@ -161,5 +137,4 @@ class Piece
       end
     end
   end
-
 end

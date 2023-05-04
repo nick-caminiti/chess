@@ -29,9 +29,27 @@ class Player
 
   def prompt_for_draw(player, draw_reason); end
 
-  def get_turn_input
+  # def get_turn_input
     # prompt for move
     # make sure move is legal - can't move into check, can't be players in the way
     # if move is illegal, say why
+  # end
+
+  def get_turn_input
+    # loop do
+    #   move = verify_input(player_input)
+    #   return move if move
+    # end
+    player_input
+  end
+
+  def verify_input(input)
+    return input if input.match?(/^[a-h]{1}[1-8]{1}:[a-h]{1}[1-8]$/)
+  end
+
+  def player_input
+    puts "#{@color} you're up! Enter S to save and exit or enter a move to play"
+    puts 'Enter your move like a2:c3'
+    gets.chomp
   end
 end
