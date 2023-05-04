@@ -70,7 +70,8 @@ describe Board do
       it 'adds a white rook to [0, 0]' do
         coordinate = [0, 0]
 
-        build_board.build_board
+        build_board.create_game_board
+        build_board.set_pieces_on_board
 
         square_object = build_board.find_square(coordinate)
         square_occupant = square_object.instance_variable_get(:@occupant)
@@ -86,7 +87,8 @@ describe Board do
       it 'adds a white queen to [3, 0]' do
         coordinate = [3, 0]
 
-        build_board.build_board
+        build_board.create_game_board
+        build_board.set_pieces_on_board
 
         square_object = build_board.find_square(coordinate)
         square_occupant = square_object.instance_variable_get(:@occupant)
@@ -103,7 +105,8 @@ describe Board do
       it 'adds a black pawn to [0, 6]' do
         coordinate = [0, 6]
 
-        build_board.build_board
+        build_board.create_game_board
+        build_board.set_pieces_on_board
 
         square_object = build_board.find_square(coordinate)
         square_occupant = square_object.instance_variable_get(:@occupant)
@@ -119,7 +122,8 @@ describe Board do
       it 'adds a black king to [4, 7]' do
         coordinate = [4, 7]
 
-        build_board.build_board
+        build_board.create_game_board
+        build_board.set_pieces_on_board
 
         square_object = build_board.find_square(coordinate)
         square_occupant = square_object.instance_variable_get(:@occupant)
@@ -143,7 +147,9 @@ describe Board do
     before do
       move_board.instance_variable_set(:@white, Player.new('white'))
       move_board.instance_variable_set(:@black, Player.new('black'))
-      move_board.build_board
+      move_board.create_game_board
+      move_board.set_pieces_on_board
+      move_board.update_pieces_current_location
     end
 
     it 'moves pawn from a2 to a4' do
@@ -156,7 +162,26 @@ describe Board do
       expect(game_board[1][0].occupant).to be(nil)
       expect(game_board[3][0].occupant).to be(piece)
       expect(piece.instance_variable_get(:@current_square)).to eq([0, 3])
-      move_board.print_board(move_board.instance_variable_get(:@white))
+      # move_board.print_board(move_board.instance_variable_get(:@white))
     end
+  end
+
+  context 'movements and attack squares for pieces' do
+    subject(:piece_board) { described_class.new(white, black) }
+    let(:white) { double('white') }
+    let(:black) { double('black') }
+
+    before do
+      piece_board.instance_variable_set(:@white, Player.new('white'))
+      piece_board.instance_variable_set(:@black, Player.new('black'))
+      piece_board.create_game_board
+      piece_board.set_pieces_on_board
+      piece_board.update_pieces_current_location
+    end
+
+    it 'adds movement coordinats to a2 pawn' do
+      piece_board.update_piece_movements_and_attacks
+    end
+
   end
 end

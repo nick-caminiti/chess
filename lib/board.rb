@@ -18,6 +18,7 @@ class Board
     create_game_board
     set_pieces_on_board
     update_pieces_current_location
+    update_piece_movements_and_attacks
   end
 
   def create_game_board
@@ -33,7 +34,11 @@ class Board
   end
 
   def find_square(coordinate)
-    @game_board[coordinate[1]][coordinate[0]]
+    if coordinate[0] > 7 || coordinate[0] < 0 || coordinate[1] > 7 || coordinate[1] < 0
+      false
+    else
+      @game_board[coordinate[1]][coordinate[0]]
+    end
   end
 
   def set_pieces_on_board
@@ -77,6 +82,14 @@ class Board
       row.each do |square|
         is_a_piece = square.occupant.is_a? Piece
         square.occupant.instance_variable_set(:@current_square, square.instance_variable_get(:@coordinate)) if is_a_piece
+      end
+    end
+  end
+
+  def update_piece_movements_and_attacks
+    @game_board.each do |row|
+      row.each do |square|
+        square.occupant.update_movements_and_attacks(@game_board) if square.occupant.is_a? Piece
       end
     end
   end
@@ -145,14 +158,17 @@ class Board
     current_coordinate = convert_alphanum_to_num(input[0, 2])
     new_coordinate = convert_alphanum_to_num(input[3, 4])
 
-    current_square = find_square(current_coordinate)
-    current_square_occupant = current_square.occupant
+    starting_square = find_square(current_coordinate)
+    moving_piece = starting_square.occupant
     new_square = find_square(new_coordinate)
 
-    current_square_occupant.instance_variable_set(:@current_square, new_coordinate)
-    current_square_occupant.instance_variable_set(:@moved, true)
-    new_square.occupant = current_square_occupant
-    current_square.occupant = nil
+    new_square.occupant.instance_variable_set(:@current_square, nil) if new_square.occupant.is_a? Piece
+
+    moving_piece.instance_variable_set(:@current_square, new_coordinate)
+    moving_piece.instance_variable_set(:@moved, true)
+
+    new_square.occupant = moving_piece
+    starting_square.occupant = nil
   end
 
   def convert_alphanum_to_num(alphanum)
@@ -163,11 +179,20 @@ class Board
     [column, row]
   end
 
-  def check_for_checkmate(king)
+  def check_for_legal_move(color, start, destination)
+    return false if check_for_check(color, destination)
+
+    piece = find_square(convert_alphanum_to_num(start))
+    return false unless piece.move_squares.include?(convert_alphanum_to_num(destination))
+
+    true
+  end
+
+  def check_for_checkmate(color)
     # is king in check for any of it's movement options
   end
 
-  def check_for_check(king); end
+  def check_for_check(color, coordinate); end
 
   def draw_conditions_met; end
 

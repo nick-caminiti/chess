@@ -89,6 +89,7 @@ class Game
     else
       @board.make_move(input)
     end
+    @board.update_piece_movements_and_attacks
   end
 
   def switch_current_player
