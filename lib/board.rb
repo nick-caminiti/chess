@@ -17,7 +17,7 @@ class Board
   def build_board
     create_game_board
     set_pieces_on_board
-    update_pieces_current_location
+    update_pieces_instance_variables
     update_piece_movements_and_attacks
   end
 
@@ -34,7 +34,7 @@ class Board
   end
 
   def find_square(coordinate)
-    if coordinate[0] > 7 || coordinate[0] < 0 || coordinate[1] > 7 || coordinate[1] < 0
+    if coordinate[0] > 7 || coordinate[0].negative? || coordinate[1] > 7 || coordinate[1].negative?
       false
     else
       @game_board[coordinate[1]][coordinate[0]]
@@ -77,11 +77,13 @@ class Board
     find_square([7, 6]).occupant = @black.pawn8
   end
 
-  def update_pieces_current_location
+  def update_pieces_instance_variables
     @game_board.each do |row|
       row.each do |square|
-        is_a_piece = square.occupant.is_a? Piece
-        square.occupant.instance_variable_set(:@current_square, square.instance_variable_get(:@coordinate)) if is_a_piece
+        next unless square.occupant.is_a? Piece
+
+        square.occupant.instance_variable_set(:@current_square, square.instance_variable_get(:@coordinate))
+        square.occupant.instance_variable_set(:@game_board, self)
       end
     end
   end
@@ -154,10 +156,7 @@ class Board
     symbols
   end
 
-  def make_move(input)
-    current_coordinate = convert_alphanum_to_num(input[0, 2])
-    new_coordinate = convert_alphanum_to_num(input[3, 4])
-
+  def make_move(current_coordinate, new_coordinate)
     starting_square = find_square(current_coordinate)
     moving_piece = starting_square.occupant
     new_square = find_square(new_coordinate)
@@ -189,10 +188,42 @@ class Board
   end
 
   def check_for_checkmate(color)
-    # is king in check for any of it's movement options
+    # need a caveat incase king can capture one of the pieces
+    # need to somehow update board state after king moving
+    player = color == 'white' ? @white : @black
+
+    king = player.king
+    start_coordinate = king.instance_variable_get(:@current_square).instance_variable_get(:@coordinate)
+    check_coordinate = []
+
+    move_squares = king.instance_variable_get(:@move_squares)
+    move_squares.each do |square|
+      king_coordinate = king.instance_variable_get(:@current_square).instance_variable_get(:@coordinate)
+      check_coordinate = square.instance_variable_get(:@coordinate)
+      make_move(king_coordinate, check_coordinate)
+      return false unless check_for_check(color, square)
+    end
+    true
   end
 
-  def check_for_check(color, coordinate); end
+  def check_for_check(color, coordinate)
+    attacking_color = color == 'white' ? 'black' : 'white'
+    in_check = false
+
+    @game_board.each do |row|
+      row.each do |square|
+        next unless square.occupant.is_a? Piece
+
+        piece = square.occupant
+        # p piece
+        next unless piece.instance_variable_get(:@color) == attacking_color
+
+        attack_squares = piece.instance_variable_get(:@attack_squares)
+        in_check = true if attack_squares.include?(coordinate)
+      end
+    end
+    in_check
+  end
 
   def draw_conditions_met; end
 

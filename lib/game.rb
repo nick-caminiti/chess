@@ -55,13 +55,12 @@ class Game
 
   def play_rounds
     loop do
-      draw_protocol
+      # draw_protocol
       break if @draw
 
       play_turn
-      puts 'hi'
       switch_current_player
-      @check = check_for_check(@current_player.king)
+      @check = check_for_check(@current_player.color, @current_player.king.instance_variable_get(:current_square))
       print_new_board_state
 
       checkmate_protocol if @check
@@ -83,18 +82,24 @@ class Game
   end
 
   def play_turn
-    puts 'hello'
     loop do
       input = @current_player.get_turn_input
       if input == 'S'
         save_game
         exit
-      elsif check_for_legal_move(@current_player.color, input)
-        @board.make_move(input)
+      elsif @board.check_for_legal_move(@current_player.color, input)
+        input_coordinates = convert_input_to_coordinates(input)
+        @board.make_move(input_coordinates[0], input_coordinates[1])
         break
       end
     end
     @board.update_piece_movements_and_attacks
+  end
+
+  def convert_input_to_coordinates(input)
+    current_coordinate = @board.convert_alphanum_to_num(input[0, 2])
+    new_coordinate = @board.convert_alphanum_to_num(input[3, 4])
+    [current_coordinate, new_coordinate]
   end
 
   def switch_current_player

@@ -10,7 +10,7 @@ class Piece
     @color = color
     @symbol = symbol_look_up(type, color)
     @current_square = nil
-    @current_board = nil
+    @game_board = nil
     @current_column = nil
     @current_row = nil
     @moved = false
@@ -33,11 +33,9 @@ class Piece
     symbol_hash[color.to_sym][type.to_sym]
   end
 
-  def update_movements_and_attacks(current_board)
-    # attacks should be added to move_squares
-    @current_board = current_board
+  def update_movements_and_attacks
     update_movements
-    update_attacks if @type == 'pawn'
+    update_attacks
   end
 
   def move_look_up
@@ -94,7 +92,7 @@ class Piece
         new_row += direction[1]
         new_coordinate = [new_column, new_row]
 
-        new_square = @current_board.find_square(new_coordinate)
+        new_square = @game_board.find_square(new_coordinate)
         break if new_square == false
 
         unless new_square.occupant.nil?
@@ -113,7 +111,7 @@ class Piece
       new_row = @current_row + move[1]
       new_coordinate = [new_column, new_row]
 
-      new_square = @current_board.find_square(new_coordinate)
+      new_square = @game_board.find_square(new_coordinate)
       next if new_square == false
 
       unless new_square.occupant.nil?
@@ -126,6 +124,14 @@ class Piece
   end
 
   def update_attacks
+    if @type == 'pawn'
+      update_pawn_attacks
+    else
+      @attack_squares = @move_squares
+    end
+  end
+
+  def update_pawn_attacks
     pawn_attacks = [[1, 1], [-1, 1]]
     new_coordinate = []
 
@@ -134,7 +140,7 @@ class Piece
       new_row = @current_row + move[1]
       new_coordinate = [new_column, new_row]
 
-      new_square = @current_board.find_square(new_coordinate)
+      new_square = @game_board.find_square(new_coordinate)
       next if new_square == false
 
       unless new_square.occupant.nil?
