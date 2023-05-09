@@ -1,10 +1,6 @@
 To Do's
 
 Moves
-- pieces don't always have the right moves
-- rook can't always move all the way next to another piece (like right behind it's pawn)
-- pawn attack isn't registering in check
-- pawn not getting correct attack squares?
 
 check_for_legal_move
 - need to fix logic for moving into check

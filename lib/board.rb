@@ -179,13 +179,29 @@ class Board
   end
 
   def check_for_legal_move(color, origin, destination)
-    # return false if check_for_check(color, destination)
-
+    player = color == 'white' ? @white : @black
     piece = find_square(origin).instance_variable_get(:@occupant)
+    current_square = find_square(origin)
     move_squares = piece.instance_variable_get(:@move_squares)
+    current_player_king_coord = player.instance_variable_get(:@king).instance_variable_get(:@current_coordinate)
 
     return false unless piece.instance_variable_get(:@color) == color
     return false unless move_squares.include?(destination)
+
+    if piece.type == 'king'
+      return false if check_for_check(color, destination)
+    else
+      # return false if king would end up in check after move
+      current_square.instance_variable_set(:@occupant, nil)
+      update_piece_movements_and_attacks
+      if check_for_check(color, current_player_king_coord)
+        current_square.instance_variable_set(:@occupant, piece)
+        update_piece_movements_and_attacks
+        return false
+      end
+      current_square.instance_variable_set(:@occupant, piece)
+      update_piece_movements_and_attacks
+    end
 
     true
   end

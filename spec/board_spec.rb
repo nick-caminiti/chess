@@ -187,6 +187,7 @@ describe Board do
     subject(:check_board) { described_class.new(white, black) }
     subject(:black_pawn) { Piece.new('pawn', 'black') }
     subject(:black_king) { Piece.new('king', 'black') }
+    subject(:white_pawn) { Piece.new('pawn', 'white') }
     subject(:white_rook) { Piece.new('rook', 'white') }
     subject(:white_rook2) { Piece.new('rook', 'white') }
     subject(:white_knight) { Piece.new('knight', 'white') }
@@ -214,6 +215,24 @@ describe Board do
 
       king_color = 'black'
       king_location = black_king.instance_variable_get(:@current_coordinate)
+      expect(check_board.check_for_check(king_color, king_location)).to eq(true)
+    end
+
+    it 'check returns true if black king in check by white pawn' do
+      black_king.instance_variable_set(:@current_coordinate, [5, 7])
+      black_king.instance_variable_set(:@game_board, check_board)
+      black_king_square = check_board.find_square([5, 7])
+      black_king_square.occupant = black_king
+
+      white_pawn.instance_variable_set(:@current_coordinate, [4, 6])
+      white_pawn.instance_variable_set(:@game_board, check_board)
+      white_pawn_square = check_board.find_square([4, 6])
+      white_pawn_square.occupant = white_pawn
+      white_pawn.update_movements_and_attacks
+
+      king_color = 'black'
+      king_location = black_king.instance_variable_get(:@current_coordinate)
+      # check_board.print_board(check_board.instance_variable_get(:@white))
       expect(check_board.check_for_check(king_color, king_location)).to eq(true)
     end
 
@@ -322,6 +341,60 @@ describe Board do
       expect(check_board.check_for_checkmate(king_color)).to eq(false)
     end
 
-    xit 'returns'
+    it '#check_for_legal_move returns false if king would be in check after move' do
+      check_board.instance_variable_get(:@black).instance_variable_set(:@king, black_king)
+
+      black_king.instance_variable_set(:@current_coordinate, [5, 7])
+      black_king.instance_variable_set(:@game_board, check_board)
+      black_king_square = check_board.find_square([5, 7])
+      black_king_square.occupant = black_king
+      black_king.update_movements_and_attacks
+
+      white_rook.instance_variable_set(:@current_coordinate, [2, 7])
+      white_rook.instance_variable_set(:@game_board, check_board)
+      white_rook_square = check_board.find_square([2, 7])
+      white_rook_square.occupant = white_rook
+      white_rook.update_movements_and_attacks
+
+      black_pawn.instance_variable_set(:@current_coordinate, [4, 7])
+      black_pawn.instance_variable_set(:@game_board, check_board)
+      black_pawn_square = check_board.find_square([4, 7])
+      black_pawn_square.occupant = black_pawn
+      black_pawn.update_movements_and_attacks
+
+      king_color = 'black'
+      expect(check_board.check_for_legal_move(king_color, [4, 7], [4, 6])).to eq(false)
+    end
+
+    it '#check_for_legal_move returns true if king would not be in check after move' do
+      check_board.instance_variable_get(:@black).instance_variable_set(:@king, black_king)
+
+      black_king.instance_variable_set(:@current_coordinate, [5, 7])
+      black_king.instance_variable_set(:@game_board, check_board)
+      black_king_square = check_board.find_square([5, 7])
+      black_king_square.occupant = black_king
+      black_king.update_movements_and_attacks
+
+      white_rook.instance_variable_set(:@current_coordinate, [2, 7])
+      white_rook.instance_variable_set(:@game_board, check_board)
+      white_rook_square = check_board.find_square([2, 7])
+      white_rook_square.occupant = white_rook
+      white_rook.update_movements_and_attacks
+
+      white_bishop.instance_variable_set(:@current_coordinate, [3, 7])
+      white_bishop.instance_variable_set(:@game_board, check_board)
+      white_bishop_square = check_board.find_square([3, 7])
+      white_bishop_square.occupant = white_bishop
+      white_bishop.update_movements_and_attacks
+
+      black_pawn.instance_variable_set(:@current_coordinate, [4, 7])
+      black_pawn.instance_variable_set(:@game_board, check_board)
+      black_pawn_square = check_board.find_square([4, 7])
+      black_pawn_square.occupant = black_pawn
+      black_pawn.update_movements_and_attacks
+
+      king_color = 'black'
+      expect(check_board.check_for_legal_move(king_color, [4, 7], [4, 6])).to eq(true)
+    end
   end
 end
