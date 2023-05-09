@@ -9,7 +9,7 @@ class Piece
     @type = type
     @color = color
     @symbol = symbol_look_up(type, color)
-    @current_square = nil
+    @current_coordinate = nil
     @game_board = nil
     @current_column = nil
     @current_row = nil
@@ -45,16 +45,26 @@ class Piece
       knight: [[1, 2], [1, -2], [-1, 2], [-1, -2], [2, 1], [2, -1], [-2, 1], [-2, -1]],
       pawn: [[0, 1], [0, 2]]
     }
-
-    @type == 'pawn' && @moved ? [[0, 1]] : @move_hash[type.to_sym]
+    # pawn not working
+    if @type == 'pawn'
+      case @color
+      when 'white'
+        @moved ? [[0, 1]] : [[0, 1], [0, 2]]
+      when 'black'
+        @moved ? [[0, -1]] : [[0, -1], [0, -2]]
+      end
+    else
+      @move_hash[type.to_sym]
+    end
   end
 
   def update_movements
     @move_squares = []
-    @current_column = @current_square[0]
-    @current_row = @current_square[1]
+    @current_column = @current_coordinate[0]
+    @current_row = @current_coordinate[1]
 
     set_movements_based_on_type
+    @move_squares = [] if @move_squares.nil?
   end
 
   def set_movements_based_on_type
@@ -129,10 +139,15 @@ class Piece
     else
       @attack_squares = @move_squares
     end
+
+    @attack_squares = [] if @attack_squares.nil?
   end
 
   def update_pawn_attacks
-    pawn_attacks = [[1, 1], [-1, 1]]
+    pawn_attacks_white = [[1, 1], [-1, 1]]
+    pawn_attacks_black = [[1, -1], [-1, -1]]
+
+    pawn_attacks = @color == 'white' ? pawn_attacks_white : pawn_attacks_black
     new_coordinate = []
 
     pawn_attacks.each do |move|

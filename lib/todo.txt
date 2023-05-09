@@ -1,0 +1,14 @@
+To Do's
+
+Moves
+- pieces don't always have the right moves
+- rook can't always move all the way next to another piece (like right behind it's pawn)
+- pawn attack isn't registering in check
+
+Checkmate
+- checkmate needs to take into account the ability of opponent to take attacking piece
+
+Misc
+- need to add ability to promote pawn
+- need to add ability to save game
+- castling and en passant

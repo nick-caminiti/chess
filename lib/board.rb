@@ -82,7 +82,7 @@ class Board
       row.each do |square|
         next unless square.occupant.is_a? Piece
 
-        square.occupant.instance_variable_set(:@current_square, square.instance_variable_get(:@coordinate))
+        square.occupant.instance_variable_set(:@current_coordinate, square.instance_variable_get(:@coordinate))
         square.occupant.instance_variable_set(:@game_board, self)
       end
     end
@@ -91,7 +91,7 @@ class Board
   def update_piece_movements_and_attacks
     @game_board.each do |row|
       row.each do |square|
-        square.occupant.update_movements_and_attacks(self) if square.occupant.is_a? Piece
+        square.occupant.update_movements_and_attacks if square.occupant.is_a? Piece
       end
     end
   end
@@ -161,9 +161,9 @@ class Board
     moving_piece = starting_square.occupant
     new_square = find_square(new_coordinate)
 
-    new_square.occupant.instance_variable_set(:@current_square, nil) if new_square.occupant.is_a? Piece
+    new_square.occupant.instance_variable_set(:@current_coordinate, nil) if new_square.occupant.is_a? Piece
 
-    moving_piece.instance_variable_set(:@current_square, new_coordinate)
+    moving_piece.instance_variable_set(:@current_coordinate, new_coordinate)
     moving_piece.instance_variable_set(:@moved, true)
 
     new_square.occupant = moving_piece
@@ -178,31 +178,37 @@ class Board
     [column, row]
   end
 
-  def check_for_legal_move(color, move)
+  def check_for_legal_move(color, origin, destination)
     return false if check_for_check(color, destination)
 
-    piece = find_square(convert_alphanum_to_num(start))
-    return false unless piece.move_squares.include?(convert_alphanum_to_num(destination))
+    piece = find_square(origin).instance_variable_get(:@occupant)
+    move_squares = piece.instance_variable_get(:@move_squares)
+    attack_squares = piece.instance_variable_get(:@attack_squares)
+
+    return false unless piece.instance_variable_get(:@color) == color
+    return false unless move_squares.include?(destination) || attack_squares.include?(destination)
 
     true
   end
 
   def check_for_checkmate(color)
-    # need a caveat incase king can capture one of the pieces
-    # need to somehow update board state after king moving
     player = color == 'white' ? @white : @black
 
     king = player.king
-    start_coordinate = king.instance_variable_get(:@current_square).instance_variable_get(:@coordinate)
-    check_coordinate = []
+    kings_current_square = find_square(king.instance_variable_get(:@current_coordinate))
+    kings_current_square.instance_variable_set(:@occupant, nil)
+    update_piece_movements_and_attacks
 
     move_squares = king.instance_variable_get(:@move_squares)
-    move_squares.each do |square|
-      king_coordinate = king.instance_variable_get(:@current_square).instance_variable_get(:@coordinate)
-      check_coordinate = square.instance_variable_get(:@coordinate)
-      make_move(king_coordinate, check_coordinate)
-      return false unless check_for_check(color, square)
+    move_squares.each do |coordinate|
+      unless check_for_check(color, coordinate)
+        kings_current_square.instance_variable_set(:@occupant, king)
+        update_piece_movements_and_attacks
+        return false
+      end
     end
+    kings_current_square.instance_variable_set(:@occupant, king)
+    update_piece_movements_and_attacks
     true
   end
 
@@ -215,10 +221,11 @@ class Board
         next unless square.occupant.is_a? Piece
 
         piece = square.occupant
-        # p piece
         next unless piece.instance_variable_get(:@color) == attacking_color
 
         attack_squares = piece.instance_variable_get(:@attack_squares)
+        next if attack_squares.nil?
+
         in_check = true if attack_squares.include?(coordinate)
       end
     end
@@ -231,5 +238,4 @@ class Board
 
   def check_for_legal_moves(player); end
 
-  # edge cases like castling and en passant
 end

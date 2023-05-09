@@ -48,7 +48,7 @@ class Player
   end
 
   def player_input
-    puts "#{@color} you're up! Enter S to save and exit or enter a move to play"
+    puts "#{@color} you're up! Enter 's' to save and exit or enter a move to play"
     puts 'Enter your move like a2:c3'
     gets.chomp
   end
