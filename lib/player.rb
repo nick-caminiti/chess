@@ -36,10 +36,14 @@ class Player
   # end
 
   def get_turn_input
-    # loop do
-    #   move = verify_input(player_input)
-    #   return move if move
-    # end
+    ask_count = 0
+    loop do
+      player_prompt(ask_count)
+      move = verify_input(player_input)
+      return move if move
+
+      ask_count += 1
+    end
     player_input
   end
 
@@ -47,9 +51,16 @@ class Player
     return input if input.match?(/^[a-h]{1}[1-8]{1}:[a-h]{1}[1-8]$/)
   end
 
+  def player_prompt(ask_count)
+    # puts ''
+    if ask_count.zero?
+      puts "#{@color.capitalize} you're up!"
+      # puts '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
+      # puts "Enter 's' to save and exit or enter a move to play."
+    end
+    # puts 'Moves must be entered in the following format - a2:a3'
+  end
   def player_input
-    puts "#{@color} you're up! Enter 's' to save and exit or enter a move to play"
-    puts 'Enter your move like a2:c3'
     gets.chomp
   end
 end

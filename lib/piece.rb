@@ -39,13 +39,10 @@ class Piece
   end
 
   def move_look_up
-    # need to adjust for pawn moving
     @move_hash = {
       king: [[1, 1], [1, 0], [1, -1], [0, 1], [0, -1], [-1, 1], [-1, 0], [-1, -1]],
       knight: [[1, 2], [1, -2], [-1, 2], [-1, -2], [2, 1], [2, -1], [-2, 1], [-2, -1]],
-      pawn: [[0, 1], [0, 2]]
     }
-    # pawn not working
     if @type == 'pawn'
       case @color
       when 'white'
@@ -134,6 +131,7 @@ class Piece
   end
 
   def update_attacks
+    @attack_squares = []
     if @type == 'pawn'
       update_pawn_attacks
     else
@@ -148,6 +146,7 @@ class Piece
     pawn_attacks_black = [[1, -1], [-1, -1]]
 
     pawn_attacks = @color == 'white' ? pawn_attacks_white : pawn_attacks_black
+
     new_coordinate = []
 
     pawn_attacks.each do |move|
@@ -158,10 +157,11 @@ class Piece
       new_square = @game_board.find_square(new_coordinate)
       next if new_square == false
 
-      unless new_square.occupant.nil?
-        @move_squares << new_coordinate if new_square.occupant.instance_variable_get(:@color) != @color
-        break
-      end
+      next unless new_square.occupant.is_a? Piece
+      next unless new_square.occupant.instance_variable_get(:@color) != @color
+
+      @move_squares << new_coordinate
+      @attack_squares << new_coordinate
     end
   end
 end

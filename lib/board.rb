@@ -179,14 +179,13 @@ class Board
   end
 
   def check_for_legal_move(color, origin, destination)
-    return false if check_for_check(color, destination)
+    # return false if check_for_check(color, destination)
 
     piece = find_square(origin).instance_variable_get(:@occupant)
     move_squares = piece.instance_variable_get(:@move_squares)
-    attack_squares = piece.instance_variable_get(:@attack_squares)
 
     return false unless piece.instance_variable_get(:@color) == color
-    return false unless move_squares.include?(destination) || attack_squares.include?(destination)
+    return false unless move_squares.include?(destination)
 
     true
   end

@@ -153,15 +153,15 @@ describe Board do
     end
 
     it 'moves pawn from a2 to a4' do
-      input = 'a2:a4'
+      origin = [0, 1]
+      destination = [0, 3]
       game_board = move_board.instance_variable_get(:@game_board)
       piece = game_board[1][0].occupant
-
-      move_board.make_move(input)
+      move_board.make_move(origin, destination)
 
       expect(game_board[1][0].occupant).to be(nil)
       expect(game_board[3][0].occupant).to be(piece)
-      expect(piece.instance_variable_get(:@current_square)).to eq([0, 3])
+      expect(piece.instance_variable_get(:@current_coordinate)).to eq([0, 3])
       # move_board.print_board(move_board.instance_variable_get(:@white))
     end
   end
@@ -201,49 +201,49 @@ describe Board do
     end
 
     it 'check returns true if black king in check' do
-      black_king.instance_variable_set(:@current_square, [5, 7])
+      black_king.instance_variable_set(:@current_coordinate, [5, 7])
       black_king.instance_variable_set(:@game_board, check_board)
       black_king_square = check_board.find_square([5, 7])
       black_king_square.occupant = black_king
 
-      white_rook.instance_variable_set(:@current_square, [5, 0])
+      white_rook.instance_variable_set(:@current_coordinate, [5, 0])
       white_rook.instance_variable_set(:@game_board, check_board)
       white_rook_square = check_board.find_square([5, 0])
       white_rook_square.occupant = white_rook
       white_rook.update_movements_and_attacks
 
       king_color = 'black'
-      king_location = black_king.instance_variable_get(:@current_square)
+      king_location = black_king.instance_variable_get(:@current_coordinate)
       expect(check_board.check_for_check(king_color, king_location)).to eq(true)
     end
 
     it 'check returns false if black king is not in check' do
-      black_king.instance_variable_set(:@current_square, [5, 7])
+      black_king.instance_variable_set(:@current_coordinate, [5, 7])
       black_king.instance_variable_set(:@game_board, check_board)
       black_king_square = check_board.find_square([5, 7])
       black_king_square.occupant = black_king
 
-      white_rook.instance_variable_set(:@current_square, [4, 0])
+      white_rook.instance_variable_set(:@current_coordinate, [4, 0])
       white_rook.instance_variable_set(:@game_board, check_board)
       white_rook_square = check_board.find_square([4, 0])
       white_rook_square.occupant = white_rook
       white_rook.update_movements_and_attacks
 
       king_color = 'black'
-      king_location = black_king.instance_variable_get(:@current_square)
+      king_location = black_king.instance_variable_get(:@current_coordinate)
       expect(check_board.check_for_check(king_color, king_location)).to eq(false)
     end
 
     it 'checkmate returns false if black king is not in check' do
       check_board.instance_variable_get(:@black).instance_variable_set(:@king, black_king)
 
-      black_king.instance_variable_set(:@current_square, [5, 7])
+      black_king.instance_variable_set(:@current_coordinate, [5, 7])
       black_king.instance_variable_set(:@game_board, check_board)
       black_king_square = check_board.find_square([5, 7])
       black_king_square.occupant = black_king
       black_king.update_movements_and_attacks
 
-      white_rook.instance_variable_set(:@current_square, [4, 0])
+      white_rook.instance_variable_set(:@current_coordinate, [4, 0])
       white_rook.instance_variable_set(:@game_board, check_board)
       white_rook_square = check_board.find_square([4, 0])
       white_rook_square.occupant = white_rook
@@ -256,13 +256,13 @@ describe Board do
     it 'checkmate returns false if black king is in check, but not mate' do
       check_board.instance_variable_get(:@black).instance_variable_set(:@king, black_king)
 
-      black_king.instance_variable_set(:@current_square, [5, 7])
+      black_king.instance_variable_set(:@current_coordinate, [5, 7])
       black_king.instance_variable_set(:@game_board, check_board)
       black_king_square = check_board.find_square([5, 7])
       black_king_square.occupant = black_king
       black_king.update_movements_and_attacks
 
-      white_rook.instance_variable_set(:@current_square, [5, 0])
+      white_rook.instance_variable_set(:@current_coordinate, [5, 0])
       white_rook.instance_variable_set(:@game_board, check_board)
       white_rook_square = check_board.find_square([5, 0])
       white_rook_square.occupant = white_rook
@@ -275,29 +275,53 @@ describe Board do
     it 'checkmate returns true if black king is in checkmate' do
       check_board.instance_variable_get(:@black).instance_variable_set(:@king, black_king)
 
-      black_king.instance_variable_set(:@current_square, [5, 7])
+      black_king.instance_variable_set(:@current_coordinate, [5, 7])
       black_king.instance_variable_set(:@game_board, check_board)
       black_king_square = check_board.find_square([5, 7])
       black_king_square.occupant = black_king
       black_king.update_movements_and_attacks
 
-      white_rook.instance_variable_set(:@current_square, [0, 7])
+      white_rook.instance_variable_set(:@current_coordinate, [0, 7])
       white_rook.instance_variable_set(:@game_board, check_board)
       white_rook_square = check_board.find_square([0, 7])
       white_rook_square.occupant = white_rook
       white_rook.update_movements_and_attacks
 
-      white_rook2.instance_variable_set(:@current_square, [0, 6])
+      white_rook2.instance_variable_set(:@current_coordinate, [0, 6])
       white_rook2.instance_variable_set(:@game_board, check_board)
       white_rook2_square = check_board.find_square([0, 6])
       white_rook2_square.occupant = white_rook2
       white_rook2.update_movements_and_attacks
 
-      p white_rook.instance_variable_get(:@attack_squares)
-      p white_rook2.instance_variable_get(:@attack_squares)
-      p black_king.instance_variable_get(:@move_squares)
       king_color = 'black'
       expect(check_board.check_for_checkmate(king_color)).to eq(true)
     end
+
+    it 'checkmate returns false if king can capture a piece that has it in check' do
+      check_board.instance_variable_get(:@black).instance_variable_set(:@king, black_king)
+
+      black_king.instance_variable_set(:@current_coordinate, [5, 7])
+      black_king.instance_variable_set(:@game_board, check_board)
+      black_king_square = check_board.find_square([5, 7])
+      black_king_square.occupant = black_king
+      black_king.update_movements_and_attacks
+
+      white_rook.instance_variable_set(:@current_coordinate, [4, 7])
+      white_rook.instance_variable_set(:@game_board, check_board)
+      white_rook_square = check_board.find_square([4, 7])
+      white_rook_square.occupant = white_rook
+      white_rook.update_movements_and_attacks
+
+      white_rook2.instance_variable_set(:@current_coordinate, [0, 6])
+      white_rook2.instance_variable_set(:@game_board, check_board)
+      white_rook2_square = check_board.find_square([0, 6])
+      white_rook2_square.occupant = white_rook2
+      white_rook2.update_movements_and_attacks
+
+      king_color = 'black'
+      expect(check_board.check_for_checkmate(king_color)).to eq(false)
+    end
+
+    xit 'returns'
   end
 end
