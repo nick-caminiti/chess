@@ -185,11 +185,20 @@ class Board
     move_squares = piece.instance_variable_get(:@move_squares)
     current_player_king_coord = player.instance_variable_get(:@king).instance_variable_get(:@current_coordinate)
 
-    return false unless piece.instance_variable_get(:@color) == color
-    return false unless move_squares.include?(destination)
+    unless piece.instance_variable_get(:@color) == color
+      puts "That's not your piece!"
+      return false
+    end
+    unless move_squares.include?(destination)
+      puts "That piece can't move there!"
+      return false
+    end
 
     if piece.type == 'king'
-      return false if check_for_check(color, destination)
+      if check_for_check(color, destination)
+        puts "You can't move into check!"
+        return false
+      end
     else
       # return false if king would end up in check after move
       current_square.instance_variable_set(:@occupant, nil)
@@ -197,6 +206,7 @@ class Board
       if check_for_check(color, current_player_king_coord)
         current_square.instance_variable_set(:@occupant, piece)
         update_piece_movements_and_attacks
+        puts 'Your move would leave your king in check!'
         return false
       end
       current_square.instance_variable_set(:@occupant, piece)

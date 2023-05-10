@@ -3,10 +3,14 @@ To Do's
 Moves
 
 check_for_legal_move
-- need to fix logic for moving into check
+- write a test for king moving into check
+- e7:e5 not working mid game, no movement
+
+Check
 
 Checkmate
-- checkmate needs to take into account the ability of opponent to take attacking piece
+- checkmate needs to take into account the ability of opponent to 
+  take attacking piece
 
 Draw
 - need to write draw protocol
@@ -15,3 +19,5 @@ Misc
 - need to add ability to promote pawn
 - need to add ability to save game
 - castling and en passant
+
+Refactor
