@@ -261,6 +261,26 @@ class Board
 
   def update_draw_reason; end
 
-  def check_for_legal_moves(player); end
+  def check_for_legal_moves(player)
+    color = player.instance_variable_get(:@color)
+    legal_move = false
 
+    @game_board.each do |row|
+      row.each do |square|
+        next unless square.occupant.is_a? Piece
+
+        piece = square.occupant
+        piece_origin = piece.instance_variable_get(:@current_coordinate)
+        next unless piece.instance_variable_get(:@color) == color
+
+        move_squares = piece.instance_variable_get(:@move_squares)
+        next if move_squares.nil?
+
+        move_squares.each do |coordinate|
+          legal_move = true if check_for_legal_move(color, piece_origin, coordinate)
+        end
+      end
+    end
+    legal_move
+  end
 end

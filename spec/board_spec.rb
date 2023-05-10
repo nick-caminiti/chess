@@ -397,4 +397,57 @@ describe Board do
       expect(check_board.check_for_legal_move(king_color, [4, 7], [4, 6])).to eq(true)
     end
   end
+
+  context 'draw' do
+    subject(:draw_board) { described_class.new(white, black) }
+    subject(:black_pawn) { Piece.new('pawn', 'black') }
+    subject(:black_king) { Piece.new('king', 'black') }
+    subject(:white_pawn) { Piece.new('pawn', 'white') }
+    subject(:white_rook) { Piece.new('rook', 'white') }
+    subject(:white_rook2) { Piece.new('rook', 'white') }
+    subject(:white_knight) { Piece.new('knight', 'white') }
+    subject(:white_bishop) { Piece.new('bishop', 'white') }
+    subject(:white_queen) { Piece.new('queen', 'white') }
+    let(:white) { double('white') }
+    let(:black) { double('black') }
+
+    before do
+      draw_board.instance_variable_set(:@white, Player.new('white'))
+      draw_board.instance_variable_set(:@black, Player.new('black'))
+      draw_board.create_game_board
+    end
+
+    it '#check_for_legal_moves returns false if king is stalemated' do
+      black_king.instance_variable_set(:@current_coordinate, [7, 7])
+      black_king.instance_variable_set(:@game_board, draw_board)
+      black_king_square = draw_board.find_square([7, 7])
+      black_king_square.occupant = black_king
+
+      black_pawn.instance_variable_set(:@current_coordinate, [0, 1])
+      black_pawn.instance_variable_set(:@game_board, draw_board)
+      black_pawn_square = draw_board.find_square([0, 1])
+      black_pawn_square.occupant = black_pawn
+
+      white_pawn.instance_variable_set(:@current_coordinate, [0, 0])
+      white_pawn.instance_variable_set(:@game_board, draw_board)
+      white_pawn_square = draw_board.find_square([0, 0])
+      white_pawn_square.occupant = white_pawn
+
+      white_queen.instance_variable_set(:@current_coordinate, [6, 5])
+      white_queen.instance_variable_set(:@game_board, draw_board)
+      white_queen_square = draw_board.find_square([6, 5])
+      white_queen_square.occupant = white_queen
+
+      black_king.update_movements_and_attacks
+      black_king.update_movements_and_attacks
+      white_pawn.update_movements_and_attacks
+      black_pawn.update_movements_and_attacks
+      white_queen.update_movements_and_attacks
+
+      black_player = draw_board.instance_variable_get(:@black)
+
+      expect(draw_board.check_for_legal_moves(black_player)).to eq(false)
+    end
+
+  end
 end
