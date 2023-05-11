@@ -5,6 +5,7 @@ Moves
 check_for_legal_move
 - write a test for king moving into check
 - e7:e5 not working mid game, no movement
+- king can't attack pawn e8:f7 to get out of check
 - separate puts statements into separate function call,
   so method can be used internally
 
@@ -19,5 +20,7 @@ Misc
 - need to add ability to promote pawn
 - need to add ability to save game
 - castling and en passant
+- write test for switch_current_player
 
 Refactor
+- everything in board...

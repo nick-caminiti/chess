@@ -178,40 +178,59 @@ class Board
     [column, row]
   end
 
-  def legal_move?(color, origin, destination)
-    player = color == 'white' ? @white : @black
+  def legal_move?(player, origin, destination)
     piece = find_square(origin).instance_variable_get(:@occupant)
+    color = player.instance_variable_get(:@color)
     current_square = find_square(origin)
     move_squares = piece.instance_variable_get(:@move_squares)
     current_player_king_coord = player.instance_variable_get(:@king).instance_variable_get(:@current_coordinate)
 
     return false unless piece.instance_variable_get(:@color) == color
-    # puts "That's not your piece!"
-
     return false unless move_squares.include?(destination)
-    # puts "That piece can't move there!"
-
     return false if piece.type == 'king' && check_for_check(color, destination)
 
-    # puts "You can't move into check!"
+    adjust_square_occupant_update_movements(current_square, nil)
+    legal = !check_for_check(color, current_player_king_coord)
+    adjust_square_occupant_update_movements(current_square, piece)
+    legal
+  end
 
-    # return false if king would end up in check after move
-    current_square.instance_variable_set(:@occupant, nil)
+  def adjust_square_occupant_update_movements(square, new_occupant)
+    square.instance_variable_set(:@occupant, new_occupant)
     update_piece_movements_and_attacks
-    if check_for_check(color, current_player_king_coord)
-      current_square.instance_variable_set(:@occupant, piece)
-      update_piece_movements_and_attacks
-      # puts 'Your move would leave your king in check!'
-      return false
-    end
-    current_square.instance_variable_set(:@occupant, piece)
-    update_piece_movements_and_attacks
-
-    true
   end
 
   def illegal_move_feedback
+    piece = find_square(origin).instance_variable_get(:@occupant)
+    color = player.instance_variable_get(:@color)
+    current_square = find_square(origin)
+    move_squares = piece.instance_variable_get(:@move_squares)
+    current_player_king_coord = player.instance_variable_get(:@king).instance_variable_get(:@current_coordinate)
 
+    return false unless piece.instance_variable_get(:@color) == color
+
+    puts "That's not your piece!"
+
+    return false unless move_squares.include?(destination)
+
+    puts "That piece can't move there!"
+
+    return false if piece.type == 'king' && check_for_check(color, destination)
+
+    puts "You can't move into check!"
+
+    # return false if king would end up in check after move
+    adjust_square_occupant_update_movements(current_square, nil)
+
+    if check_for_check(color, current_player_king_coord)
+      adjust_square_occupant_update_movements(current_square, piece)
+
+      puts 'Your move would leave your king in check!'
+      return false
+    end
+    adjust_square_occupant_update_movements(current_square, piece)
+
+    true
   end
 
   def check_for_checkmate(color)
@@ -275,7 +294,7 @@ class Board
         next if move_squares.nil?
 
         move_squares.each do |coordinate|
-          return true if legal_move?(color, piece_origin, coordinate)
+          return true if legal_move?(player, piece_origin, coordinate)
         end
       end
     end

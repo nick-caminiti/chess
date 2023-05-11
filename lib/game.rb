@@ -55,7 +55,7 @@ class Game
 
   def play_rounds
     loop do
-      # draw_protocol
+      draw_protocol
       break if @draw
 
       play_turn
@@ -90,7 +90,8 @@ class Game
         exit
       end
       input_coordinates = convert_input_to_coordinates(input)
-      break if @board.check_for_legal_move(@current_player.color, input_coordinates[0], input_coordinates[1])
+      break if @board.legal_move?(@current_player, input_coordinates[0], input_coordinates[1])
+
     end
     @board.make_move(input_coordinates[0], input_coordinates[1])
     @board.update_piece_movements_and_attacks
@@ -103,7 +104,6 @@ class Game
   end
 
   def switch_current_player
-    # needs a test
     @current_player = @current_player == @white ? @black : @white
   end
 
