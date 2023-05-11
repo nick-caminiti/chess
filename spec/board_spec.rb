@@ -342,6 +342,7 @@ describe Board do
     end
 
     it '#legal_move? returns false if king would be in check after move' do
+      black_player = check_board.instance_variable_get(:@black)
       check_board.instance_variable_get(:@black).instance_variable_set(:@king, black_king)
 
       black_king.instance_variable_set(:@current_coordinate, [5, 7])
@@ -363,10 +364,11 @@ describe Board do
       black_pawn.update_movements_and_attacks
 
       king_color = 'black'
-      expect(check_board.legal_move?(king_color, [4, 7], [4, 6])).to eq(false)
+      expect(check_board.legal_move?(black_player, [4, 7], [4, 6])).to eq(false)
     end
 
     it '#legal_move? returns true if king would not be in check after move' do
+      black_player = check_board.instance_variable_get(:@black)
       check_board.instance_variable_get(:@black).instance_variable_set(:@king, black_king)
 
       black_king.instance_variable_set(:@current_coordinate, [5, 7])
@@ -394,7 +396,7 @@ describe Board do
       black_pawn.update_movements_and_attacks
 
       king_color = 'black'
-      expect(check_board.legal_move?(king_color, [4, 7], [4, 6])).to eq(true)
+      expect(check_board.legal_move?(black_player, [4, 7], [4, 6])).to eq(true)
     end
   end
 

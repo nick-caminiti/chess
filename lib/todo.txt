@@ -24,3 +24,4 @@ Misc
 
 Refactor
 - everything in board...
+- and piece :/
