@@ -92,6 +92,7 @@ class Game
       input_coordinates = convert_input_to_coordinates(input)
       break if @board.legal_move?(@current_player, input_coordinates[0], input_coordinates[1])
 
+      @board.illegal_move_feedback(@current_player, input_coordinates[0], input_coordinates[1])
     end
     @board.make_move(input_coordinates[0], input_coordinates[1])
     @board.update_piece_movements_and_attacks

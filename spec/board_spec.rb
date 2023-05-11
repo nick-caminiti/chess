@@ -363,7 +363,6 @@ describe Board do
       black_pawn_square.occupant = black_pawn
       black_pawn.update_movements_and_attacks
 
-      king_color = 'black'
       expect(check_board.legal_move?(black_player, [4, 7], [4, 6])).to eq(false)
     end
 
@@ -395,8 +394,75 @@ describe Board do
       black_pawn_square.occupant = black_pawn
       black_pawn.update_movements_and_attacks
 
-      king_color = 'black'
       expect(check_board.legal_move?(black_player, [4, 7], [4, 6])).to eq(true)
+    end
+
+    it '#king_in_check_after_move? returns board to original state after moving one piece' do
+      black_player = check_board.instance_variable_get(:@black)
+      check_board.instance_variable_get(:@black).instance_variable_set(:@king, black_king)
+
+      black_king.instance_variable_set(:@current_coordinate, [5, 7])
+      black_king.instance_variable_set(:@game_board, check_board)
+      black_king_square = check_board.find_square([5, 7])
+      black_king_square.occupant = black_king
+      black_king.update_movements_and_attacks
+
+      # white_rook.instance_variable_set(:@current_coordinate, [4, 7])
+      # white_rook.instance_variable_set(:@game_board, check_board)
+      # white_rook_square = check_board.find_square([4, 7])
+      # white_rook_square.occupant = white_rook
+      # white_rook.update_movements_and_attacks
+
+      white_bishop.instance_variable_set(:@current_coordinate, [3, 7])
+      white_bishop.instance_variable_set(:@game_board, check_board)
+      white_bishop_square = check_board.find_square([3, 7])
+      white_bishop_square.occupant = white_bishop
+      white_bishop.update_movements_and_attacks
+
+      # black_pawn.instance_variable_set(:@current_coordinate, [4, 7])
+      # black_pawn.instance_variable_set(:@game_board, check_board)
+      # black_pawn_square = check_board.find_square([4, 7])
+      # black_pawn_square.occupant = black_pawn
+      # black_pawn.update_movements_and_attacks
+
+      expect(check_board.legal_move?(black_player, [5, 7], [4, 7])).to eq(true)
+      check_board.king_in_check_after_move?(black_player, [5, 7], [4, 7])
+      square_occupant = check_board.find_square([4, 7]).instance_variable_get(:@occupant)
+      expect(square_occupant).to eq(nil)
+    end
+
+    it '#king_in_check_after_move? returns board to original state after two moving pieces' do
+      black_player = check_board.instance_variable_get(:@black)
+      check_board.instance_variable_get(:@black).instance_variable_set(:@king, black_king)
+
+      black_king.instance_variable_set(:@current_coordinate, [5, 7])
+      black_king.instance_variable_set(:@game_board, check_board)
+      black_king_square = check_board.find_square([5, 7])
+      black_king_square.occupant = black_king
+      black_king.update_movements_and_attacks
+
+      white_rook.instance_variable_set(:@current_coordinate, [4, 7])
+      white_rook.instance_variable_set(:@game_board, check_board)
+      white_rook_square = check_board.find_square([4, 7])
+      white_rook_square.occupant = white_rook
+      white_rook.update_movements_and_attacks
+
+      white_bishop.instance_variable_set(:@current_coordinate, [3, 7])
+      white_bishop.instance_variable_set(:@game_board, check_board)
+      white_bishop_square = check_board.find_square([3, 7])
+      white_bishop_square.occupant = white_bishop
+      white_bishop.update_movements_and_attacks
+
+      # black_pawn.instance_variable_set(:@current_coordinate, [4, 7])
+      # black_pawn.instance_variable_set(:@game_board, check_board)
+      # black_pawn_square = check_board.find_square([4, 7])
+      # black_pawn_square.occupant = black_pawn
+      # black_pawn.update_movements_and_attacks
+
+      expect(check_board.legal_move?(black_player, [5, 7], [4, 7])).to eq(true)
+      check_board.king_in_check_after_move?(black_player, [5, 7], [4, 7])
+      square_occupant = check_board.find_square([4, 7]).instance_variable_get(:@occupant)
+      expect(square_occupant.instance_variable_get(:@type)).to eq('rook')
     end
   end
 
