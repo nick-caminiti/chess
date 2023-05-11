@@ -95,6 +95,10 @@ class Game
       @board.illegal_move_feedback(@current_player, input_coordinates[0], input_coordinates[1])
     end
     @board.make_move(input_coordinates[0], input_coordinates[1])
+    if @board.pawn_promotion?(@current_player, input_coordinates[1])
+      promo_choice = @current_player.prompt_for_pawn_promotion
+      @board.promote_pawn(@current_player, promo_choice, input_coordinates[1])
+    end
     @board.update_piece_movements_and_attacks
   end
 

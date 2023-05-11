@@ -267,6 +267,33 @@ class Board
     in_check
   end
 
+  def pawn_promotion?(player, coordinate)
+    player_color = player.instance_variable_get(:@color)
+    row = coordinate[1]
+    piece_type = find_square(coordinate).instance_variable_get(:@occupant).instance_variable_get(:@type)
+    return false unless piece_type == 'pawn'
+
+    if player_color == 'white' && row == 7
+      return true
+    elsif player_color == 'black' && row.zero?
+      return true
+    end
+
+    false
+  end
+
+  def promote_pawn(player, choice, coordinate)
+    square = find_square(coordinate)
+    promo_choices = { q: 'queen', r: 'rook', b: 'bishop', k: 'knight' }
+    promo_choice = promo_choices[choice.to_sym]
+
+    new_piece = Piece.new(promo_choice, player.instance_variable_get(:@color))
+
+    square.instance_variable_set(:@occupant, new_piece)
+    new_piece.instance_variable_set(:@current_coordinate, coordinate)
+    new_piece.instance_variable_set(:@game_board, self)
+  end
+
   def draw_conditions_met; end
 
   def update_draw_reason; end

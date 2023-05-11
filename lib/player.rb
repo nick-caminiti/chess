@@ -39,7 +39,7 @@ class Player
     ask_count = 0
     loop do
       player_prompt(ask_count)
-      move = verify_input(player_input)
+      move = verify_turn_input(player_input)
       return move if move
 
       ask_count += 1
@@ -47,7 +47,7 @@ class Player
     player_input
   end
 
-  def verify_input(input)
+  def verify_turn_input(input)
     return input if input.match?(/^[a-h]{1}[1-8]{1}:[a-h]{1}[1-8]$/)
   end
 
@@ -60,6 +60,18 @@ class Player
     else
       puts 'Moves must be entered in the following format - a2:a3'
     end
+  end
+
+  def prompt_for_pawn_promotion
+    puts "Your pawn is promoting! Enter 'q' for Queen, 'r' for Rook, 'k' for Knight, or 'b' for Bishop."
+    loop do
+      promo = verify_promo_input(player_input)
+      return promo if promo
+    end
+  end
+
+  def verify_promo_input(input)
+    return input if input.match?(/^[qrkb]$/)
   end
 
   def player_input

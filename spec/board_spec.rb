@@ -407,23 +407,11 @@ describe Board do
       black_king_square.occupant = black_king
       black_king.update_movements_and_attacks
 
-      # white_rook.instance_variable_set(:@current_coordinate, [4, 7])
-      # white_rook.instance_variable_set(:@game_board, check_board)
-      # white_rook_square = check_board.find_square([4, 7])
-      # white_rook_square.occupant = white_rook
-      # white_rook.update_movements_and_attacks
-
       white_bishop.instance_variable_set(:@current_coordinate, [3, 7])
       white_bishop.instance_variable_set(:@game_board, check_board)
       white_bishop_square = check_board.find_square([3, 7])
       white_bishop_square.occupant = white_bishop
       white_bishop.update_movements_and_attacks
-
-      # black_pawn.instance_variable_set(:@current_coordinate, [4, 7])
-      # black_pawn.instance_variable_set(:@game_board, check_board)
-      # black_pawn_square = check_board.find_square([4, 7])
-      # black_pawn_square.occupant = black_pawn
-      # black_pawn.update_movements_and_attacks
 
       expect(check_board.legal_move?(black_player, [5, 7], [4, 7])).to eq(true)
       check_board.king_in_check_after_move?(black_player, [5, 7], [4, 7])
@@ -431,7 +419,7 @@ describe Board do
       expect(square_occupant).to eq(nil)
     end
 
-    it '#king_in_check_after_move? returns board to original state after two moving pieces' do
+    it '#king_in_check_after_move? returns board to original state after moving two pieces' do
       black_player = check_board.instance_variable_get(:@black)
       check_board.instance_variable_get(:@black).instance_variable_set(:@king, black_king)
 
@@ -516,6 +504,70 @@ describe Board do
 
       expect(draw_board.check_for_legal_moves(black_player)).to eq(false)
     end
+  end
 
+  context 'pawn promotion' do
+    subject(:promo_board) { described_class.new(white, black) }
+    subject(:black_pawn) { Piece.new('pawn', 'black') }
+    subject(:black_king) { Piece.new('king', 'black') }
+    subject(:white_pawn) { Piece.new('pawn', 'white') }
+    subject(:white_rook) { Piece.new('rook', 'white') }
+    subject(:white_rook2) { Piece.new('rook', 'white') }
+    subject(:white_knight) { Piece.new('knight', 'white') }
+    subject(:white_bishop) { Piece.new('bishop', 'white') }
+    subject(:white_queen) { Piece.new('queen', 'white') }
+    let(:white) { double('white') }
+    let(:black) { double('black') }
+
+    before do
+      promo_board.instance_variable_set(:@white, Player.new('white'))
+      promo_board.instance_variable_set(:@black, Player.new('black'))
+      promo_board.create_game_board
+    end
+
+    it "#pawn_promotion? returns false if white pawn isn't promoting" do
+      white_pawn.instance_variable_set(:@current_coordinate, [0, 0])
+      white_pawn.instance_variable_set(:@game_board, promo_board)
+      white_pawn_square = promo_board.find_square([0, 0])
+      white_pawn_square.occupant = white_pawn
+
+      white_player = promo_board.instance_variable_get(:@white)
+
+      expect(promo_board.pawn_promotion?(white_player, [0, 0])).to eq(false)
+    end
+
+    it "#pawn_promotion? returns true if white pawn is promoting" do
+      white_pawn.instance_variable_set(:@current_coordinate, [6, 7])
+      white_pawn.instance_variable_set(:@game_board, promo_board)
+      white_pawn_square = promo_board.find_square([6, 7])
+      white_pawn_square.occupant = white_pawn
+
+      white_player = promo_board.instance_variable_get(:@white)
+
+      expect(promo_board.pawn_promotion?(white_player, [6, 7])).to eq(true)
+    end
+
+    it "#pawn_promotion? returns false if black pawn isn't promoting" do
+      black_pawn.instance_variable_set(:@current_coordinate, [6, 6])
+      black_pawn.instance_variable_set(:@game_board, promo_board)
+      black_pawn_square = promo_board.find_square([6, 6])
+      black_pawn_square.occupant = black_pawn
+
+      black_player = promo_board.instance_variable_get(:@black)
+
+      expect(promo_board.pawn_promotion?(black_player, [6, 6])).to eq(false)
+    end
+
+    it '#pawn_promotion? returns true if black pawn is promoting' do
+      black_pawn.instance_variable_set(:@current_coordinate, [0, 0])
+      black_pawn.instance_variable_set(:@game_board, promo_board)
+      black_pawn_square = promo_board.find_square([0, 0])
+      black_pawn_square.occupant = black_pawn
+
+      black_player = promo_board.instance_variable_get(:@black)
+
+      expect(promo_board.pawn_promotion?(black_player, [0, 0])).to eq(true)
+    end
+    
   end
 end

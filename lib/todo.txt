@@ -12,12 +12,13 @@ check_for_legal_move
 Check
 
 Checkmate
+- need to check if non-king piece can attack a piece and remove check
 
 Draw
 - need to write draw protocol
 
 Misc
-- need to add ability to promote pawn
+- write tests for pawn promotion
 - need to add ability to save game
 - castling and en passant
 - write test for switch_current_player
