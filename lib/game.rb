@@ -54,9 +54,6 @@ class Game
   ########################################
 
   def play_rounds
-    # need to build in promotion
-
-
     loop do
       # draw_protocol
       break if @draw
@@ -77,11 +74,11 @@ class Game
       @draw_reason = 'No legal moves'
     end
 
-    return unless @board.draw_conditions_met
+    # return unless @board.draw_conditions_met
 
-    @board.update_draw_reason
-    @draw = true if @current_player.prompt_for_draw(@current_player, @board.draw_reason) == true
-    @board.draw_reason = nil unless @draw == true
+    # @board.update_draw_reason
+    # @draw = true if @current_player.prompt_for_draw(@current_player, @board.draw_reason) == true
+    # @board.draw_reason = nil unless @draw == true
   end
 
   def play_turn

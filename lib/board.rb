@@ -178,42 +178,40 @@ class Board
     [column, row]
   end
 
-  def check_for_legal_move(color, origin, destination)
+  def legal_move?(color, origin, destination)
     player = color == 'white' ? @white : @black
     piece = find_square(origin).instance_variable_get(:@occupant)
     current_square = find_square(origin)
     move_squares = piece.instance_variable_get(:@move_squares)
     current_player_king_coord = player.instance_variable_get(:@king).instance_variable_get(:@current_coordinate)
 
-    unless piece.instance_variable_get(:@color) == color
-      puts "That's not your piece!"
-      return false
-    end
-    unless move_squares.include?(destination)
-      puts "That piece can't move there!"
-      return false
-    end
+    return false unless piece.instance_variable_get(:@color) == color
+    # puts "That's not your piece!"
 
-    if piece.type == 'king'
-      if check_for_check(color, destination)
-        puts "You can't move into check!"
-        return false
-      end
-    else
-      # return false if king would end up in check after move
-      current_square.instance_variable_set(:@occupant, nil)
-      update_piece_movements_and_attacks
-      if check_for_check(color, current_player_king_coord)
-        current_square.instance_variable_set(:@occupant, piece)
-        update_piece_movements_and_attacks
-        puts 'Your move would leave your king in check!'
-        return false
-      end
+    return false unless move_squares.include?(destination)
+    # puts "That piece can't move there!"
+
+    return false if piece.type == 'king' && check_for_check(color, destination)
+
+    # puts "You can't move into check!"
+
+    # return false if king would end up in check after move
+    current_square.instance_variable_set(:@occupant, nil)
+    update_piece_movements_and_attacks
+    if check_for_check(color, current_player_king_coord)
       current_square.instance_variable_set(:@occupant, piece)
       update_piece_movements_and_attacks
+      # puts 'Your move would leave your king in check!'
+      return false
     end
+    current_square.instance_variable_set(:@occupant, piece)
+    update_piece_movements_and_attacks
 
     true
+  end
+
+  def illegal_move_feedback
+
   end
 
   def check_for_checkmate(color)
@@ -277,7 +275,7 @@ class Board
         next if move_squares.nil?
 
         move_squares.each do |coordinate|
-          legal_move = true if check_for_legal_move(color, piece_origin, coordinate)
+          return true if legal_move?(color, piece_origin, coordinate)
         end
       end
     end
