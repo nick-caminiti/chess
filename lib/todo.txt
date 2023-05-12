@@ -4,21 +4,15 @@ Moves
 
 check_for_legal_move
 - write a test for king moving into check
-- e7:e5 not working mid game, no movement
-- king can't attack pawn e8:f7 to get out of check
-- separate puts statements into separate function call,
-  so method can be used internally
 
 Check
 
 Checkmate
-- need to check if non-king piece can attack a piece and remove check
 
 Draw
 - need to write draw protocol
 
 Misc
-- write tests for pawn promotion
 - need to add ability to save game
 - castling and en passant
 - write test for switch_current_player
@@ -26,3 +20,5 @@ Misc
 Refactor
 - everything in board...
 - and piece :/
+- store player's pieces in hash instead of separate instance variables
+

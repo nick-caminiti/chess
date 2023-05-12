@@ -183,12 +183,30 @@ class Board
     color = player.instance_variable_get(:@color)
     move_squares = moving_piece.instance_variable_get(:@move_squares)
 
+    return false if moving_piece.nil?
     return false unless moving_piece.instance_variable_get(:@color) == color
     return false unless move_squares.include?(destination)
     return false if moving_piece.type == 'king' && check_for_check(color, destination)
     return false if moving_piece.type != 'king' && king_in_check_after_move?(player, origin, destination)
 
     true
+  end
+
+  def illegal_move_feedback(player, origin, destination)
+    moving_piece = find_square(origin).instance_variable_get(:@occupant)
+    color = player.instance_variable_get(:@color)
+    move_squares = moving_piece.instance_variable_get(:@move_squares)
+
+    if moving_piece.nil?
+      puts "There's no piece there!"
+      return
+    end
+    puts "That's not your piece!" unless moving_piece.instance_variable_get(:@color) == color
+    puts "That piece can't move there!" unless move_squares.include?(destination)
+    puts "You can't move into check!" if moving_piece.type == 'king' && check_for_check(color, destination)
+    return unless moving_piece.type != 'king' && king_in_check_after_move?(player, origin, destination)
+
+    puts 'Your move would leave your king in check!'
   end
 
   def king_in_check_after_move?(player, origin, destination)
@@ -211,19 +229,6 @@ class Board
   def adjust_square_occupant_update_movements(square, new_occupant)
     square.instance_variable_set(:@occupant, new_occupant)
     update_piece_movements_and_attacks
-  end
-
-  def illegal_move_feedback(player, origin, destination)
-    moving_piece = find_square(origin).instance_variable_get(:@occupant)
-    color = player.instance_variable_get(:@color)
-    move_squares = moving_piece.instance_variable_get(:@move_squares)
-
-    puts "That's not your piece!" unless moving_piece.instance_variable_get(:@color) == color
-    puts "That piece can't move there!" unless move_squares.include?(destination)
-    puts "You can't move into check!" if moving_piece.type == 'king' && check_for_check(color, destination)
-    return unless moving_piece.type != 'king' && king_in_check_after_move?(player, origin, destination)
-
-    puts 'Your move would leave your king in check!'
   end
 
   def check_for_checkmate(color)
