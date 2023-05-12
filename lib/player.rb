@@ -54,7 +54,8 @@ class Player
   def player_prompt(ask_count)
     # puts ''
     if ask_count.zero?
-      puts "#{@color.capitalize} you're up! Enter 's' to save and exit or enter a move to play."
+      puts "#{@color.capitalize} you're up! Entered you move in the following format - a2:a3"
+      # Enter 's' to save and exit or enter a move to play
       # puts '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
       # puts ""
     else
