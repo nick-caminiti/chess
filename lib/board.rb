@@ -228,23 +228,101 @@ class Board
 
   def check_for_checkmate(color)
     player = color == 'white' ? @white : @black
+    checkmate = true
 
     king = player.king
     kings_current_square = find_square(king.instance_variable_get(:@current_coordinate))
     kings_current_square.instance_variable_set(:@occupant, nil)
     update_piece_movements_and_attacks
 
+    checkmate = false if non_king_can_remove_check?(color, kings_current_square.instance_variable_get(:@coordinate))
     move_squares = king.instance_variable_get(:@move_squares)
     move_squares.each do |coordinate|
-      unless check_for_check(color, coordinate)
-        kings_current_square.instance_variable_set(:@occupant, king)
-        update_piece_movements_and_attacks
-        return false
-      end
+      checkmate = false unless check_for_check(color, coordinate)
+      checkmate = false if non_king_can_remove_check?(color, coordinate)
     end
+
     kings_current_square.instance_variable_set(:@occupant, king)
     update_piece_movements_and_attacks
-    true
+    checkmate
+  end
+
+  def non_king_can_remove_check?(color, check_coordinate)
+    # find all pieces checking king.. add to array?
+    # find any pieces that can attack those pieces
+    # see if removing that piece removes checkmate
+    opponent_attack_positions = build_opponent_attack_positions(color, check_coordinate)
+
+    potential_check_savers = build_potential_check_savers(color, opponent_attack_positions)
+    # potential_check savers subarrays stored as [opponents_piece, current_player_piece]
+
+    return false if potential_check_savers.empty?
+
+    check_can_be_saved?(color, check_coordinate, potential_check_savers)
+  end
+
+  def check_can_be_saved?(color, check_coordinate, potential_check_savers)
+    can_be_saved = false
+    potential_check_savers.each do |combo|
+      opponents_piece = combo[0]
+      defending_piece = combo[1]
+      origin_square = find_square(defending_piece.instance_variable_get(:@current_coordinate))
+      destination_square = find_square(opponents_piece.instance_variable_get(:@current_coordinate))
+
+      adjust_square_occupant_update_movements(origin_square, nil)
+      adjust_square_occupant_update_movements(destination_square, defending_piece)
+      can_be_saved = true unless check_for_check(color, check_coordinate)
+      adjust_square_occupant_update_movements(origin_square, defending_piece)
+      adjust_square_occupant_update_movements(destination_square, opponents_piece)
+    end
+    can_be_saved
+  end
+
+  def build_potential_check_savers(color, opponent_attack_positions)
+    potential_check_savers = [] # stored as [opponents_piece, current_player_piece]
+    @game_board.each do |row|
+      row.each do |square|
+        next unless square.occupant.is_a? Piece
+
+        piece = square.occupant
+        next unless piece.instance_variable_get(:@color) == color
+
+        attack_squares = piece.instance_variable_get(:@attack_squares)
+        next if attack_squares.nil?
+
+        possible_attack_squares = (opponent_attack_positions & attack_squares)
+
+        next if possible_attack_squares.empty?
+
+        possible_attack_squares.each do |coordinate|
+          opponents_piece = find_square(coordinate).instance_variable_get(:@occupant)
+          potential_check_savers << [opponents_piece, piece]
+        end
+      end
+    end
+    potential_check_savers
+  end
+
+  def build_opponent_attack_positions(color, check_coordinate)
+    attacking_color = color == 'white' ? 'black' : 'white'
+    opponent_attack_positions = []
+
+    @game_board.each do |row|
+      row.each do |square|
+        next unless square.occupant.is_a? Piece
+
+        piece = square.occupant
+        next unless piece.instance_variable_get(:@color) == attacking_color
+
+        attack_squares = piece.instance_variable_get(:@attack_squares)
+        next if attack_squares.nil?
+
+        if attack_squares.include?(check_coordinate)
+          opponent_attack_positions << piece.instance_variable_get(:@current_coordinate) 
+        end
+      end
+    end
+    opponent_attack_positions
   end
 
   def check_for_check(color, coordinate)
