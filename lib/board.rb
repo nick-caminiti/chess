@@ -253,13 +253,11 @@ class Board
   end
 
   def non_king_can_remove_check?(color, check_coordinate)
-    # find all pieces checking king.. add to array?
-    # find any pieces that can attack those pieces
-    # see if removing that piece removes checkmate
-    opponent_attack_positions = build_opponent_attack_positions(color, check_coordinate)
+    # opponent_attack_positions = build_opponent_attack_positions(color, check_coordinate)
+    opponent_attack_paths = build_opponent_attack_paths(color, check_coordinate)
 
-    potential_check_savers = build_potential_check_savers(color, opponent_attack_positions)
-    # potential_check savers subarrays stored as [opponents_piece, current_player_piece]
+    potential_check_savers = build_potential_check_savers(color, opponent_attack_paths)
+    # potential_check savers subarrays stored as [current_coord, destination_coord]
 
     return false if potential_check_savers.empty?
 
@@ -269,22 +267,24 @@ class Board
   def check_can_be_saved?(color, check_coordinate, potential_check_savers)
     can_be_saved = false
     potential_check_savers.each do |combo|
-      opponents_piece = combo[0]
-      defending_piece = combo[1]
-      origin_square = find_square(defending_piece.instance_variable_get(:@current_coordinate))
-      destination_square = find_square(opponents_piece.instance_variable_get(:@current_coordinate))
+      origin_square = find_square(combo[0])
+
+      destination_square = find_square(combo[1])
+
+      defending_piece = origin_square.instance_variable_get(:@occupant)
+      destination_occupant = destination_square.instance_variable_get(:@occupant)
 
       adjust_square_occupant_update_movements(origin_square, nil)
       adjust_square_occupant_update_movements(destination_square, defending_piece)
       can_be_saved = true unless check_for_check(color, check_coordinate)
       adjust_square_occupant_update_movements(origin_square, defending_piece)
-      adjust_square_occupant_update_movements(destination_square, opponents_piece)
+      adjust_square_occupant_update_movements(destination_square, destination_occupant)
     end
     can_be_saved
   end
 
   def build_potential_check_savers(color, opponent_attack_positions)
-    potential_check_savers = [] # stored as [opponents_piece, current_player_piece]
+    potential_check_savers = [] # stored as [current_coord, destination_coord]
     @game_board.each do |row|
       row.each do |square|
         next unless square.occupant.is_a? Piece
@@ -299,18 +299,19 @@ class Board
 
         next if possible_attack_squares.empty?
 
-        possible_attack_squares.each do |coordinate|
-          opponents_piece = find_square(coordinate).instance_variable_get(:@occupant)
-          potential_check_savers << [opponents_piece, piece]
+        current_coord = square.instance_variable_get(:@coordinate)
+
+        possible_attack_squares.each do |destination_coordinate|
+          potential_check_savers << [current_coord, destination_coordinate]
         end
       end
     end
     potential_check_savers
   end
 
-  def build_opponent_attack_positions(color, check_coordinate)
+  def build_opponent_attack_paths(color, check_coordinate)
     attacking_color = color == 'white' ? 'black' : 'white'
-    opponent_attack_positions = []
+    opponent_attack_paths = []
 
     @game_board.each do |row|
       row.each do |square|
@@ -323,11 +324,17 @@ class Board
         next if attack_squares.nil?
 
         if attack_squares.include?(check_coordinate)
-          opponent_attack_positions << piece.instance_variable_get(:@current_coordinate) 
+          attack_sqaures_array = piece.instance_variable_get(:@attack_squares)
+          attack_sqaures_array.each do |attack_square_coord|
+            opponent_attack_paths << attack_square_coord
+          end
+          opponent_attack_paths << piece.instance_variable_get(:@current_coordinate)
         end
       end
     end
-    opponent_attack_positions
+    # p opponent_attack_paths
+    opponent_attack_paths
+    # p opponent_attack_paths
   end
 
   def check_for_check(color, coordinate)

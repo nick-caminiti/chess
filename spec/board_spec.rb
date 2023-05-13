@@ -486,6 +486,40 @@ describe Board do
       # square_occupant = check_board.find_square([4, 7]).instance_variable_get(:@occupant)
       # expect(square_occupant.instance_variable_get(:@type)).to eq('rook')
     end
+
+    it '#non_king_can_remove_check returns true if pawn can get between rook and kin' do
+      black_player = check_board.instance_variable_get(:@black)
+      check_board.instance_variable_get(:@black).instance_variable_set(:@king, black_king)
+
+      black_king.instance_variable_set(:@current_coordinate, [5, 4])
+      black_king.instance_variable_set(:@game_board, check_board)
+      black_king_square = check_board.find_square([5, 4])
+      black_king_square.occupant = black_king
+      black_king.update_movements_and_attacks
+
+      white_rook.instance_variable_set(:@current_coordinate, [2, 4])
+      white_rook.instance_variable_set(:@game_board, check_board)
+      white_rook_square = check_board.find_square([2, 4])
+      white_rook_square.occupant = white_rook
+      white_rook.update_movements_and_attacks
+
+      # white_bishop.instance_variable_set(:@current_coordinate, [3, 7])
+      # white_bishop.instance_variable_set(:@game_board, check_board)
+      # white_bishop_square = check_board.find_square([3, 7])
+      # white_bishop_square.occupant = white_bishop
+      # white_bishop.update_movements_and_attacks
+
+      black_pawn.instance_variable_set(:@current_coordinate, [4, 5])
+      black_pawn.instance_variable_set(:@game_board, check_board)
+      black_pawn_square = check_board.find_square([4, 5])
+      black_pawn_square.occupant = black_pawn
+      black_pawn.update_movements_and_attacks
+
+      expect(check_board.non_king_can_remove_check?('black', [5, 4])).to eq(true)
+      # check_board.king_in_check_after_move?(black_player, [5, 7], [4, 7])
+      # square_occupant = check_board.find_square([4, 7]).instance_variable_get(:@occupant)
+      # expect(square_occupant.instance_variable_get(:@type)).to eq('rook')
+    end
   end
 
   context 'draw' do

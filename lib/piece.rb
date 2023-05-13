@@ -124,6 +124,8 @@ class Piece
       unless new_square.occupant.nil?
         occupant_color = new_square.occupant.instance_variable_get(:@color)
         @move_squares << new_coordinate if occupant_color != @color && @type != 'pawn'
+        break if @type == 'pawn'
+
         next
       end
       @move_squares << new_coordinate
