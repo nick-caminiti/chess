@@ -48,13 +48,13 @@ class Player
   end
 
   def verify_turn_input(input)
-    return input if input.match?(/^[a-h]{1}[1-8]{1}:[a-h]{1}[1-8]$/)
+    return input if input.match?(/^[a-h]{1}[1-8]{1}[a-h]{1}[1-8]$/)
   end
 
   def player_prompt(ask_count)
     # puts ''
     if ask_count.zero?
-      puts "#{@color.capitalize} you're up! Entered you move in the following format - a2:a3"
+      puts "#{@color.capitalize} you're up! Entered you move in the following format - a2a3"
       # Enter 's' to save and exit or enter a move to play
       # puts '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
       # puts ""

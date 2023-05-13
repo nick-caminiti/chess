@@ -104,7 +104,7 @@ class Game
 
   def convert_input_to_coordinates(input)
     current_coordinate = @board.convert_alphanum_to_num(input[0, 2])
-    new_coordinate = @board.convert_alphanum_to_num(input[3, 4])
+    new_coordinate = @board.convert_alphanum_to_num(input[2, 3])
     [current_coordinate, new_coordinate]
   end
 
